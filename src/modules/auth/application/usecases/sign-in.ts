@@ -1,13 +1,11 @@
 import { Either, left, right } from 'fp-ts/Either';
-import { BaseError } from '../../../../core/errors/base-error';
 import { IAuthRepository } from '../repositories/sign-in';
+import { BaseError } from '../../../../core/errors/base-error';
 
 export type UserCredentialsDTO = {
   uid: string;
   name: string;
   email: string;
-  accessToken: string;
-  refreshToken: string;
 };
 
 interface ISignInUsecase {
