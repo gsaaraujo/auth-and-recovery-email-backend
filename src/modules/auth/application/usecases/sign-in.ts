@@ -1,4 +1,4 @@
-import { Either, left, right } from 'fp-ts/Either';
+import { Either, left } from '../../../../app/helpers/either';
 import { IAuthRepository } from '../repositories/sign-in';
 import { BaseError } from '../../../../core/errors/base-error';
 
@@ -6,6 +6,8 @@ export type UserCredentialsDTO = {
   uid: string;
   name: string;
   email: string;
+  accessToken: string;
+  refreshToken: string;
 };
 
 interface ISignInUsecase {
@@ -26,6 +28,10 @@ class SignInUsecaseImpl implements ISignInUsecase {
     email: string,
     password: string,
   ): Promise<Either<BaseError, UserCredentialsDTO>> {
-    return this.authRepository.signIn(email, password);
+    const userOrError = await this.authRepository.signIn(email, password);
+
+    if (userOrError.isLeft()) {
+      return left(userOrError.value);
+    }
   }
 }

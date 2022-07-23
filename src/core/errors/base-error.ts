@@ -6,7 +6,9 @@ type BaseErrorType = {
 
 export class BaseError extends Error {
   constructor({ message }: BaseErrorType) {
-    debug(`--> ${message} <--`);
     super();
+
+    debug(`--> ${message} <--`);
+    Error.captureStackTrace(this);
   }
 }
