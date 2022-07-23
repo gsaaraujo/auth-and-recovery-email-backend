@@ -3,10 +3,7 @@ import { BaseError } from '../../../../core/errors/base-error';
 import { Either, left, right } from '../../../../app/helpers/either';
 import { DatabaseError } from '../../../../core/errors/database-error';
 import { InvalidCredentialsError } from '../errors/invalid-credentials';
-import {
-  IAuthRepository,
-  UserDTO,
-} from '../../application/repositories/sign-in';
+import { IAuthRepository, UserDTO } from '../../data/ports/auth-repository';
 
 class PostgresAuthGateway implements IAuthRepository {
   private readonly postgresDatabase: Client;

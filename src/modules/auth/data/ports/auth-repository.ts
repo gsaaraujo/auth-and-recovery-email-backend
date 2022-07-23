@@ -7,6 +7,7 @@ export type UserDTO = {
   email: string;
   password: string;
 };
+
 export interface IAuthRepository {
   signIn(email: string, password: string): Promise<Either<BaseError, UserDTO>>;
 }

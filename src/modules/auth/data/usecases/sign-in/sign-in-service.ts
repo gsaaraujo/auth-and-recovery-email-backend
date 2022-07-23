@@ -1,37 +1,21 @@
 import jwt from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
 
-import { BaseError } from '../../../../core/errors/base-error';
-import { IAuthRepository, UserDTO } from '../repositories/sign-in';
-import { Either, left, right } from '../../../../app/helpers/either';
-import { InvalidCredentialsError } from '../../adapters/errors/invalid-credentials';
+import { ISignInUsecase } from './sign-in';
+import { UserSignedDTO } from '../../dtos/user-signed';
+import { UserCredentialsDTO } from '../../dtos/user-credentials';
+import { BaseError } from '../../../../../core/errors/base-error';
+import { IAuthRepository, UserDTO } from '../../ports/auth-repository';
+import { Either, left, right } from '../../../../../app/helpers/either';
+import { InvalidCredentialsError } from '../../errors/invalid-credentials';
 
-export type UserCredentialsDTO = {
-  uid: string;
-  name: string;
-  email: string;
-  accessToken: string;
-  refreshToken: string;
-};
+class SignInService implements ISignInUsecase {
+  constructor(private readonly authRepository: IAuthRepository) {}
 
-interface ISignInUsecase {
-  execute(
-    email: string,
-    password: string,
-  ): Promise<Either<Error, UserCredentialsDTO>>;
-}
-
-class SignInUsecaseImpl implements ISignInUsecase {
-  private readonly authRepository: IAuthRepository;
-
-  constructor(authRepository: IAuthRepository) {
-    this.authRepository = authRepository;
-  }
-
-  async execute(
-    email: string,
-    password: string,
-  ): Promise<Either<BaseError, UserCredentialsDTO>> {
+  async execute({
+    email,
+    password,
+  }: UserCredentialsDTO): Promise<Either<BaseError, UserSignedDTO>> {
     const userOrError = await this.authRepository.signIn(email, password);
 
     if (userOrError.isLeft()) {
@@ -63,7 +47,7 @@ class SignInUsecaseImpl implements ISignInUsecase {
       { expiresIn: process.env.REFRESH_TOKEN_EXPIRATION ?? '30d' },
     );
 
-    const userCredentials: UserCredentialsDTO = {
+    const userCredentials: UserSignedDTO = {
       uid: user.uid,
       name: user.name,
       email: user.email,
