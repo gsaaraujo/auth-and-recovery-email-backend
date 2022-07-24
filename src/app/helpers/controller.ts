@@ -7,5 +7,5 @@ export type HttpResponse<T> = {
 };
 
 export interface Controller<I, O> {
-  handle(data: I): Promise<Either<BaseError, HttpResponse<O>>>;
+  handle(data?: I): Promise<Either<BaseError, HttpResponse<O>>>;
 }
