@@ -1,11 +1,12 @@
 import { Client } from 'pg';
+import { UserDTO } from '../../data/dtos/user';
 import { BaseError } from '../../../../core/errors/base-error';
+import { IUserRepository } from '../../data/ports/user-repository';
 import { Either, left, right } from '../../../../app/helpers/either';
 import { DatabaseError } from '../../../../core/errors/database-error';
 import { InvalidCredentialsError } from '../errors/invalid-credentials';
-import { IAuthRepository, UserDTO } from '../../data/ports/auth-repository';
 
-class PostgresAuthGateway implements IAuthRepository {
+class PostgresAuthGateway implements IUserRepository {
   private readonly postgresDatabase: Client;
 
   constructor(postgresDatabase: Client) {

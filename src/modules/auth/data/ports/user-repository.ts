@@ -1,13 +1,7 @@
+import { UserDTO } from '../dtos/user';
 import { Either } from '../../../../app/helpers/either';
 import { BaseError } from '../../../../core/errors/base-error';
 
-export type UserDTO = {
-  uid: string;
-  name: string;
-  email: string;
-  password: string;
-};
-
-export interface IAuthRepository {
+export interface IUserRepository {
   signIn(email: string, password: string): Promise<Either<BaseError, UserDTO>>;
 }

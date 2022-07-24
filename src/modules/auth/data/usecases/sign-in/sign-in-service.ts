@@ -1,21 +1,21 @@
 import jwt from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
 
+import { UserDTO } from '../../dtos/user';
 import { ISignInUsecase } from './sign-in';
 import { UserSignedDTO } from '../../dtos/user-signed';
-import { UserCredentialsDTO } from '../../dtos/user-credentials';
+import { IUserRepository } from '../../ports/user-repository';
 import { BaseError } from '../../../../../core/errors/base-error';
-import { IAuthRepository, UserDTO } from '../../ports/auth-repository';
 import { Either, left, right } from '../../../../../app/helpers/either';
 import { InvalidCredentialsError } from '../../errors/invalid-credentials';
 
 class SignInService implements ISignInUsecase {
-  constructor(private readonly authRepository: IAuthRepository) {}
+  constructor(private readonly authRepository: IUserRepository) {}
 
-  async execute({
-    email,
-    password,
-  }: UserCredentialsDTO): Promise<Either<BaseError, UserSignedDTO>> {
+  async execute(
+    email: string,
+    password: string,
+  ): Promise<Either<BaseError, UserSignedDTO>> {
     const userOrError = await this.authRepository.signIn(email, password);
 
     if (userOrError.isLeft()) {
@@ -47,7 +47,7 @@ class SignInService implements ISignInUsecase {
       { expiresIn: process.env.REFRESH_TOKEN_EXPIRATION ?? '30d' },
     );
 
-    const userCredentials: UserSignedDTO = {
+    const userCredentials = {
       uid: user.uid,
       name: user.name,
       email: user.email,

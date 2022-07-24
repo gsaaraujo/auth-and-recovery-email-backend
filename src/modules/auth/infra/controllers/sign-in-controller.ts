@@ -1,10 +1,8 @@
 import { Either } from '../../../../app/helpers/either';
 import { BaseError } from '../../../../core/errors/base-error';
 import { Controller, HttpResponse } from '../../../../app/helpers/controller';
-import {
-  ISignInUsecase,
-  UserSignedDTO,
-} from '../../data/usecases/sign-in/sign-in';
+import { ISignInUsecase } from '../../data/usecases/sign-in/sign-in';
+import { UserSignedDTO } from '../../data/dtos/user-signed';
 
 export type UserAuth = {
   email: string;
@@ -17,6 +15,6 @@ class SignInController implements Controller<UserAuth, UserSignedDTO> {
   async handle(
     data: UserAuth,
   ): Promise<Either<BaseError, HttpResponse<UserSignedDTO>>> {
-    this.signInUsecase.execute('', '');
+    // this.signInUsecase.execute('', '');
   }
 }
