@@ -5,7 +5,7 @@ import { BaseError } from '../../../../core/errors/base-error';
 import { IUserRepository } from '../../data/ports/user-repository';
 import { UserNotFoundError } from '../errors/user-not-found';
 
-class PrismaUserRepository implements IUserRepository {
+export class PrismaUserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaClient) {}
 
   async findOneByEmail(email: string): Promise<Either<BaseError, UserDTO>> {

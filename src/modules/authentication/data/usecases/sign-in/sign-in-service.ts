@@ -9,7 +9,7 @@ import { BaseError } from '../../../../../core/errors/base-error';
 import { Either, left, right } from '../../../../../app/helpers/either';
 import { InvalidCredentialsError } from '../../errors/invalid-credentials';
 
-class SignInService implements ISignInUsecase {
+export class SignInService implements ISignInUsecase {
   constructor(private readonly userRepository: IUserRepository) {}
 
   async execute(
