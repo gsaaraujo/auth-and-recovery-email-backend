@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import s from 'bcryptjs';
+import bcryptjs from 'bcryptjs';
 
 import { UserDTO } from '../../dtos/user';
 import { ISignInUsecase } from './sign-in';
@@ -24,11 +24,11 @@ export class SignInService implements ISignInUsecase {
     }
 
     const user: UserDTO = userOrError.value;
-    // const isUserAuth: boolean = await bcryptjs.compare(password, user.password);
+    const isUserAuth: boolean = await bcryptjs.compare(password, user.password);
 
-    // if (!isUserAuth) {
-    //   return left(new UserNotAuthenticated('Email or password is incorrect.'));
-    // }
+    if (!isUserAuth) {
+      return left(new UserNotAuthenticated('Email or password is incorrect.'));
+    }
 
     const accessToken: string = jwt.sign(
       { userId: user.uid },
