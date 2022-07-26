@@ -1,12 +1,21 @@
 import { signInController } from './di';
-import express, { Request, Response } from 'express';
+import { Request, Response, Router } from 'express';
+import { authorizationMiddleware } from '../../../core/middlewares/authorization';
 
-const authenticationRouter = express.Router();
+const authenticationRouter = Router();
 
 authenticationRouter.post(
   '/auth/sign-in',
   (request: Request, response: Response) => {
     signInController.handle(request, response);
+  },
+);
+
+authenticationRouter.get(
+  '/users',
+  authorizationMiddleware,
+  (request: Request, response: Response) => {
+    response.status(200).json('all good !');
   },
 );
 
