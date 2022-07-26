@@ -8,7 +8,7 @@ export class UserCredentialsDTO {
     public readonly password: string,
   ) {}
 
-  static create(
+  public static create(
     email: string,
     password: string,
   ): Either<UserCredentialsError, UserCredentialsDTO> {
@@ -21,7 +21,7 @@ export class UserCredentialsDTO {
     return right(new UserCredentialsDTO(email, password));
   }
 
-  static validate(email: string, password: string): string {
+  public static validate(email: string, password: string): string {
     if (email.trim().length === 0) {
       return 'The email must not be empty.';
     }
