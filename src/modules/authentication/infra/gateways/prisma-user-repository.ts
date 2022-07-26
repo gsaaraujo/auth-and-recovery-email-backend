@@ -16,11 +16,7 @@ export class PrismaUserRepository implements IUserRepository {
     });
 
     if (user == null) {
-      return left(
-        new UserNotFoundError({
-          message: 'Email or password is incorrect.',
-        }),
-      );
+      return left(new UserNotFoundError('Email or password is incorrect.'));
     }
 
     const userDTO: UserDTO = {

@@ -1,8 +1,6 @@
-import validator from 'validator';
-import isEmail from 'validator/lib/isEmail';
-
-import { Request, response, Response } from 'express';
+import { Request, Response } from 'express';
 import { ISignInUsecase } from '../../data/usecases/sign-in/sign-in';
+import { UserCredentialsDTO } from '../../data/dtos/user-credentials';
 
 export default class SignInController {
   constructor(private readonly signInUsecase: ISignInUsecase) {}
@@ -10,19 +8,13 @@ export default class SignInController {
   async handle(request: Request, response: Response): Promise<Response> {
     try {
       const { email, password } = request.body;
+      const userOrError = UserCredentialsDTO.create(email, password);
 
-      const isEmailInvalid = !validator.isEmail(email);
-      const isEmailOrPassorwdEmpties = !!!email || !!!password;
+      if (userOrError.isLeft()) {
+        const error = userOrError.value;
 
-      if (isEmailOrPassorwdEmpties) {
         return response.status(400).json({
-          error: `${!!email ? 'Password' : 'Email'} must not be empty.`,
-        });
-      }
-
-      if (isEmailInvalid) {
-        return response.status(400).json({
-          error: 'Email must be valid.',
+          error: error.message,
         });
       }
 

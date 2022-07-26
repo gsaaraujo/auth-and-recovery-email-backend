@@ -7,7 +7,7 @@ import { UserSignedDTO } from '../../dtos/user-signed';
 import { IUserRepository } from '../../ports/user-repository';
 import { BaseError } from '../../../../../core/errors/base-error';
 import { Either, left, right } from '../../../../../app/helpers/either';
-import { InvalidCredentialsError } from '../../errors/invalid-credentials';
+import { UserNotAuthenticated } from '../../errors/user-not-authenticated';
 
 export class SignInService implements ISignInUsecase {
   constructor(private readonly userRepository: IUserRepository) {}
@@ -32,7 +32,7 @@ export class SignInService implements ISignInUsecase {
 
     if (!isUserAuth) {
       return left(
-        new InvalidCredentialsError({
+        new UserNotAuthenticated({
           message: 'Email or password is incorrect.',
         }),
       );

@@ -1,14 +1,9 @@
 import { debug } from 'console';
 
-type BaseErrorType = {
-  message: string;
-};
-
 export class BaseError extends Error {
-  constructor({ message }: BaseErrorType) {
+  constructor(public readonly message: string) {
     super();
 
-    debug(`--> ${message} <--`);
-    Error.captureStackTrace(this);
+    debug(`\n[Error] ${message} \n[Stack trace]${this.stack}\n`);
   }
 }
