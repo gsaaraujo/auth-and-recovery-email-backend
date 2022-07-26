@@ -7,7 +7,8 @@ export const authorizationMiddleware = (
   response: Response,
   next: NextFunction,
 ): void => {
-  const accessToken = request.headers.authorization;
+  const authorization = request.headers.authorization;
+  const accessToken = authorization?.split(' ')[1] ?? null;
 
   if (!accessToken) {
     response.status(403).json({
