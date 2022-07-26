@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import timeout from 'connect-timeout';
-import { authenticationRouter } from './modules/authentication/main/authenticatioin-routes';
+import { authenticationRouter } from './modules/authentication/main/authentication-routes';
 
 const app = express();
 app.use(timeout(5000));
