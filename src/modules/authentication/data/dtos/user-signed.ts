@@ -1,7 +1,9 @@
-export type UserSignedDTO = {
-  uid: string;
-  name: string;
-  email: string;
-  accessToken: string;
-  refreshToken: string;
-};
+export class UserSignedDTO {
+  constructor(
+    public readonly uid: string,
+    public readonly name: string,
+    public readonly email: string,
+    public readonly accessToken: string,
+    public readonly refreshToken: string,
+  ) {}
+}

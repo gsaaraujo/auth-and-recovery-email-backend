@@ -10,22 +10,13 @@ export class PrismaUserRepository implements IUserRepository {
 
   async findOneByEmail(email: string): Promise<Either<BaseError, UserDTO>> {
     const user: User | null = await this.prisma.user.findUnique({
-      where: {
-        email: email,
-      },
+      where: { email: email },
     });
 
-    if (user == null) {
+    if (user == null)
       return left(new UserNotFoundError('Email or password is incorrect.'));
-    }
 
-    const userDTO: UserDTO = {
-      uid: user.id,
-      name: user.name,
-      email: user.email,
-      password: user.password,
-    };
-
+    const userDTO = new UserDTO(user.id, user.name, user.email, user.password);
     return right(userDTO);
   }
 }

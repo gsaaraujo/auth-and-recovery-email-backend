@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import bcryptjs from 'bcryptjs';
+import s from 'bcryptjs';
 
 import { UserDTO } from '../../dtos/user';
 import { ISignInUsecase } from './sign-in';
@@ -42,13 +42,13 @@ export class SignInService implements ISignInUsecase {
       { expiresIn: process.env.REFRESH_TOKEN_EXPIRATION ?? '30d' },
     );
 
-    const userSigned: UserSignedDTO = {
-      uid: user.uid,
-      name: user.name,
-      email: user.email,
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-    };
+    const userSigned = new UserSignedDTO(
+      user.uid,
+      user.name,
+      user.email,
+      accessToken,
+      refreshToken,
+    );
 
     return right(userSigned);
   }

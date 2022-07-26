@@ -1,6 +1,8 @@
-export type UserDTO = {
-  uid: string;
-  name: string;
-  email: string;
-  password: string;
-};
+export class UserDTO {
+  constructor(
+    public readonly uid: string,
+    public readonly name: string,
+    public readonly email: string,
+    public readonly password: string,
+  ) {}
+}
