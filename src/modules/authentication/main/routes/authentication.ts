@@ -1,6 +1,6 @@
-import { signInController } from './di';
+import { signInController } from '../di';
 import { Request, Response, Router } from 'express';
-import { authorizationMiddleware } from '../../../core/middlewares/authorization';
+import { authorizationMiddleware } from '../middlewares/authorization';
 
 const authenticationRouter = Router();
 
