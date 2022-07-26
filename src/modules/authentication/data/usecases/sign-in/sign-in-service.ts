@@ -23,42 +23,34 @@ export class SignInService implements ISignInUsecase {
       return left(error);
     }
 
-    const userDTO: UserDTO = userOrError.value;
-
-    const isUserAuth: boolean = await bcryptjs.compare(
-      password,
-      userDTO.password,
-    );
+    const user: UserDTO = userOrError.value;
+    const isUserAuth: boolean = await bcryptjs.compare(password, user.password);
 
     if (!isUserAuth) {
-      return left(
-        new UserNotAuthenticated({
-          message: 'Email or password is incorrect.',
-        }),
-      );
+      return left(new UserNotAuthenticated('Email or password is incorrect.'));
     }
 
     const accessToken: string = jwt.sign(
-      userDTO.uid,
+      { userId: user.uid },
       process.env.SECRET_ACCESS_TOKEN ?? 'ced7cafb-ca79-4b39-b154-b99afaed33b7',
       { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION ?? '15m' },
     );
 
     const refreshToken: string = jwt.sign(
-      userDTO.uid,
+      { userId: user.uid },
       process.env.SECRET_REFRESH_TOKEN ??
         '78c24895-5fe3-4eb6-8266-6f2726be4f7d',
       { expiresIn: process.env.REFRESH_TOKEN_EXPIRATION ?? '30d' },
     );
 
-    const userSignedDTO: UserSignedDTO = {
-      uid: userDTO.uid,
-      name: userDTO.name,
-      email: userDTO.email,
+    const userSigned: UserSignedDTO = {
+      uid: user.uid,
+      name: user.name,
+      email: user.email,
       accessToken: accessToken,
       refreshToken: refreshToken,
     };
 
-    return right(userSignedDTO);
+    return right(userSigned);
   }
 }

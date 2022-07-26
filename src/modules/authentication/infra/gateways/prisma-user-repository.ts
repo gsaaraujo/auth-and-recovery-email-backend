@@ -1,9 +1,9 @@
 import { UserDTO } from '../../data/dtos/user';
 import { PrismaClient, User } from '@prisma/client';
-import { Either, left, right } from '../../../../app/helpers/either';
+import { UserNotFoundError } from '../errors/user-not-found';
 import { BaseError } from '../../../../core/errors/base-error';
 import { IUserRepository } from '../../data/ports/user-repository';
-import { UserNotFoundError } from '../errors/user-not-found';
+import { Either, left, right } from '../../../../app/helpers/either';
 
 export class PrismaUserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaClient) {}
