@@ -1,6 +1,6 @@
 import { isEmailValid } from './email-validation';
 
-describe('', () => {
+describe('test email validation', () => {
   it('should return true if email is a valid email.', () => {
     const fakeEmail = 'gabriel.houth@gmail.com';
 
