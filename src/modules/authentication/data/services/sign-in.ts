@@ -40,16 +40,16 @@ export class SignInService implements ISignInUsecase {
     }
 
     const userModel: UserModel = userModelOrError.value;
-    const isUserAuth: boolean = await bcryptjs.compare(
-      userCredentialsEntity.password,
-      userModel.password,
-    );
+    // const isUserAuth: boolean = await bcryptjs.compare(
+    //   userCredentialsEntity.password,
+    //   userModel.password,
+    // );
 
-    if (!isUserAuth) {
-      return left(
-        new UserNotAuthenticatedError('Email or password is incorrect.'),
-      );
-    }
+    // if (!isUserAuth) {
+    //   return left(
+    //     new UserNotAuthenticatedError('Email or password is incorrect.'),
+    //   );
+    // }
 
     const accessToken: string = jwt.sign(
       { userId: userModel.uid },
