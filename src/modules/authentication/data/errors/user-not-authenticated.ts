@@ -1,3 +1,3 @@
 import { BaseError } from '../../../../core/errors/base-error';
 
-export class UserNotAuthenticated extends BaseError {}
+export class UserNotAuthenticatedError extends BaseError {}

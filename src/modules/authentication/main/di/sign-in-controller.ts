@@ -1,7 +1,7 @@
 import { PrismaClient } from '@prisma/client';
-import SignInController from '../infra/controllers/sign-in';
-import { SignInService } from '../data/usecases/sign-in/sign-in-service';
-import { PrismaUserRepository } from '../infra/gateways/prisma-user-repository';
+import { SignInService } from '../../data/services/sign-in';
+import SignInController from '../../adapters/controllers/sign-in';
+import { PrismaUserRepository } from '../../adapters/repositories/prisma-user';
 
 const prismaClient = new PrismaClient();
 const prismaUserRepository = new PrismaUserRepository(prismaClient);
