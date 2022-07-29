@@ -1,11 +1,11 @@
 import { PrismaClient } from '@prisma/client';
-import { SignInService } from '../../data/services/sign-in';
 import SignInController from '../../adapters/controllers/sign-in';
+import { SignInUserUsecase } from '../../data/usecases/sign-in-user';
 import { PrismaUserRepository } from '../../adapters/repositories/prisma-user';
 
 const prismaClient = new PrismaClient();
 const prismaUserRepository = new PrismaUserRepository(prismaClient);
-const signInService = new SignInService(prismaUserRepository);
+const signInService = new SignInUserUsecase(prismaUserRepository);
 const signInController = new SignInController(signInService);
 
 export { signInController };

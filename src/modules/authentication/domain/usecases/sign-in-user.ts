@@ -1,8 +1,8 @@
 import { UserSignedEntity } from '../entities/user-signed';
 import { Either } from '../../../../app/helpers/either';
-import { BaseError } from '../../../../core/errors/base-error';
+import { BaseError } from '../../../../common/errors/base-error';
 
-export interface ISignInUsecase {
+export interface ISignInUserUsecase {
   execute(
     email: string,
     password: string,

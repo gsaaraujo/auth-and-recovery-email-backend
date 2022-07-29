@@ -1,6 +1,6 @@
 import { HttpRequest } from '../app/helpers/http';
 import { NextFunction, Request, Response, Router } from 'express';
-import { authorizationMiddleware } from '../core/middlewares/authorization';
+import { authorizationMiddleware } from '../common/middlewares/authorization';
 import { authenticationRouter } from '../modules/authentication/main/routes/authentication';
 
 export const router = Router();

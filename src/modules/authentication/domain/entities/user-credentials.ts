@@ -1,9 +1,9 @@
 import { InvalidEmailError } from '../errors/invalid-email';
-import { BaseError } from '../../../../core/errors/base-error';
+import { BaseError } from '../../../../common/errors/base-error';
 import { InvalidPasswordError } from '../errors/invalid-password';
 import { Either, left, right } from '../../../../app/helpers/either';
 import { isEmailValid } from '../../../../app/utils/email-validation';
-import { MissingParamError } from '../../../../core/errors/missing-param';
+import { MissingParamError } from '../../../../common/errors/missing-param';
 
 export class UserCredentialsEntity {
   private constructor(

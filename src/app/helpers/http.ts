@@ -17,12 +17,12 @@ export const badRequest = (errorMessage: string): HttpResponse => ({
   data: errorMessage,
 });
 
-export const Unauthorized = (errorMessage: string): HttpResponse => ({
+export const unauthorized = (errorMessage: string): HttpResponse => ({
   statusCode: 401,
   data: errorMessage,
 });
 
-export const Forbidden = (errorMessage: string): HttpResponse => ({
+export const forbidden = (errorMessage: string): HttpResponse => ({
   statusCode: 403,
   data: errorMessage,
 });

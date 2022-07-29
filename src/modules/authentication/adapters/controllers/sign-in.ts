@@ -7,10 +7,10 @@ import {
   internalServerError,
 } from '../../../../app/helpers/http';
 import { UserSignedEntity } from '../../domain/entities/user-signed';
-import { ISignInUsecase } from '../../domain/usecases/sign-in';
+import { ISignInUserUsecase } from '../../domain/usecases/sign-in-user';
 
 export default class SignInController {
-  constructor(private readonly signInUsecase: ISignInUsecase) {}
+  constructor(private readonly signInUsecase: ISignInUserUsecase) {}
 
   async handle(request: HttpRequest): Promise<HttpResponse> {
     try {

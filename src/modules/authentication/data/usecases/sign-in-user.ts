@@ -3,14 +3,14 @@ import bcryptjs from 'bcryptjs';
 
 import { UserModel } from '../models/user';
 import { IUserRepository } from '../ports/user-repository';
-import { ISignInUsecase } from '../../domain/usecases/sign-in';
-import { BaseError } from '../../../../core/errors/base-error';
+import { ISignInUserUsecase } from '../../domain/usecases/sign-in-user';
+import { BaseError } from '../../../../common/errors/base-error';
 import { UserSignedEntity } from '../../domain/entities/user-signed';
 import { Either, left, right } from '../../../../app/helpers/either';
 import { UserNotAuthenticatedError } from '../errors/user-not-authenticated';
 import { UserCredentialsEntity } from '../../domain/entities/user-credentials';
 
-export class SignInService implements ISignInUsecase {
+export class SignInUserUsecase implements ISignInUserUsecase {
   constructor(private readonly userRepository: IUserRepository) {}
 
   async execute(

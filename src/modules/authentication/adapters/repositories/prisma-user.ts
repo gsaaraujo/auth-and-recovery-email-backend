@@ -1,7 +1,7 @@
 import { UserModel } from '../../data/models/user';
 import { PrismaClient, User } from '@prisma/client';
 import { UserNotFoundError } from '../errors/user-not-found';
-import { BaseError } from '../../../../core/errors/base-error';
+import { BaseError } from '../../../../common/errors/base-error';
 import { IUserRepository } from '../../data/ports/user-repository';
 import { Either, left, right } from '../../../../app/helpers/either';
 
