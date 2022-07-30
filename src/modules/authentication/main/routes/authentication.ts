@@ -1,5 +1,8 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import { signInController } from '../di/sign-in-controller';
+import {
+  reauthorizeUserController,
+  signInController,
+} from '../di/sign-in-controller';
 import { HttpRequest, HttpResponse } from '../../../../app/helpers/http';
 import { BaseError } from '../../../../common/errors/base-error';
 import { SignInRequest } from '../../adapters/controllers/sign-in';
@@ -18,6 +21,17 @@ authenticationRouter.post(
     const httpRequest: HttpRequest<SignInRequest> = { data: signInRequest };
     const httpResponse: HttpResponse = await signInController.handle(
       httpRequest,
+    );
+    response.status(httpResponse.statusCode).json({ data: httpResponse.data });
+  },
+);
+
+authenticationRouter.get(
+  '/auth/new-access-token',
+  async (request: Request, response: Response) => {
+    const accessToken = request.headers.authorization ?? '';
+    const httpResponse: HttpResponse = await reauthorizeUserController.handle(
+      accessToken,
     );
     response.status(httpResponse.statusCode).json({ data: httpResponse.data });
   },

@@ -8,7 +8,7 @@ import {
 import { MissingParamError } from '../../../../common/errors/missing-param';
 import { ServerError } from '../../../../common/errors/server';
 import { UserSignedEntity } from '../../domain/entities/user-signed';
-import { ISignInUserUsecase } from '../../domain/usecases/sign-in-user';
+import { ISignInUserUsecase } from '../../data/usecases/interfaces/sign-in-user';
 
 export type SignInRequest = {
   email: string;

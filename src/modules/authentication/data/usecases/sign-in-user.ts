@@ -3,7 +3,7 @@ import bcryptjs from 'bcryptjs';
 
 import { UserModel } from '../models/user';
 import { IUserRepository } from '../ports/user-repository';
-import { ISignInUserUsecase } from '../../domain/usecases/sign-in-user';
+import { ISignInUserUsecase } from './interfaces/sign-in-user';
 import { BaseError } from '../../../../common/errors/base-error';
 import { UserSignedEntity } from '../../domain/entities/user-signed';
 import { Either, left, right } from '../../../../app/helpers/either';
