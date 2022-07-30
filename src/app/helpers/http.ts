@@ -10,7 +10,7 @@ export type HttpResponse = {
 };
 
 export const ok = (data: any): HttpResponse => ({
-  statusCode: 400,
+  statusCode: 200,
   data: data,
 });
 
