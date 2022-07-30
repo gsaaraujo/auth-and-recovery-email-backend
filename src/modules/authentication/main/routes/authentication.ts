@@ -1,14 +1,11 @@
 import { NextFunction, Request, Response, Router } from 'express';
-import {
-  authorizeUserController,
-  reauthorizeUserController,
-  signInController,
-} from '../di/sign-in-controller';
+import { signInController } from '../factories/sign-in';
 import { HttpResponse } from '../../../../app/helpers/http';
-import { BaseError } from '../../../../common/errors/base-error';
 import { SignInRequest } from '../../adapters/controllers/sign-in';
 import { AuthorizeUserRequest } from '../../adapters/controllers/authorize-user';
 import { ReauthorizeUserRequest } from '../../adapters/controllers/reauthorize-user';
+import { authorizeUserController } from '../factories/authorize-user';
+import { reauthorizeUserController } from '../factories/reauthorize-user';
 
 const authenticationRouter = Router();
 
