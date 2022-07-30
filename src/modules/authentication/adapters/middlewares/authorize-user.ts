@@ -6,7 +6,7 @@ import {
   ok,
   unauthorized,
 } from '../../../../app/helpers/http';
-import { NotAuthorizedError } from './not-authorized';
+import { NotAuthorizedError } from '../errors/not-authorized';
 
 export type AuthorizeUserParams = {
   accessToken: string;

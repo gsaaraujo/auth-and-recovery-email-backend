@@ -6,7 +6,7 @@ import { SignInRequest } from '../../adapters/controllers/sign-in';
 import {
   AuthorizeUserMiddleware,
   AuthorizeUserParams,
-} from '../middlewares/authorize-user';
+} from '../../adapters/middlewares/authorize-user';
 
 const authenticationRouter = Router();
 
