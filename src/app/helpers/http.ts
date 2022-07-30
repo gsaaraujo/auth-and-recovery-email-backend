@@ -1,5 +1,5 @@
-export type HttpRequest = {
-  data: any;
+export type HttpRequest<T> = {
+  data: T;
 };
 
 export type HttpResponse = {

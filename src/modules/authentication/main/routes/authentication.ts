@@ -5,13 +5,18 @@ import {
 } from '../di/sign-in-controller';
 import { HttpRequest, HttpResponse } from '../../../../app/helpers/http';
 import { BaseError } from '../../../../common/errors/base-error';
+import { SignInRequest } from '../../adapters/controllers/sign-in';
 
 const authenticationRouter = Router();
 
 authenticationRouter.post(
   '/auth/sign-in',
   async (request: Request, response: Response) => {
-    const httpRequest: HttpRequest = { data: request.body };
+    const signInRequest: SignInRequest = {
+      email: request.body,
+      password: request.body,
+    };
+    const httpRequest = { data: signInRequest };
     const httpResponse: HttpResponse = await signInController.handle(
       httpRequest,
     );

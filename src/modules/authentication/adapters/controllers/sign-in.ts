@@ -1,4 +1,3 @@
-import { Request, Response } from 'express';
 import {
   ok,
   badRequest,
@@ -9,12 +8,18 @@ import {
 import { UserSignedEntity } from '../../domain/entities/user-signed';
 import { ISignInUserUsecase } from '../../domain/usecases/sign-in-user';
 
+export type SignInRequest = {
+  email: string;
+  password: string;
+};
+
 export default class SignInController {
   constructor(private readonly signInUsecase: ISignInUserUsecase) {}
 
-  async handle(request: HttpRequest): Promise<HttpResponse> {
+  async handle(request: HttpRequest<SignInRequest>): Promise<HttpResponse> {
     try {
       const { email, password } = request.data;
+
       const userSignedOrError = await this.signInUsecase.execute(
         email,
         password,
