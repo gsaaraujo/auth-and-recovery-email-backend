@@ -52,19 +52,19 @@ export class SignInUserUsecase implements ISignInUserUsecase {
     // }
 
     const accessToken: string = jwt.sign(
-      { userId: userModel.uid },
+      { userId: userModel.id },
       process.env.SECRET_ACCESS_TOKEN ?? '',
       { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION ?? '15m' },
     );
 
     const refreshToken: string = jwt.sign(
-      { userId: userModel.uid },
+      { userId: userModel.id },
       process.env.SECRET_REFRESH_TOKEN ?? '',
       { expiresIn: process.env.REFRESH_TOKEN_EXPIRATION ?? '30d' },
     );
 
     const userSignedEntity = new UserSignedEntity(
-      userModel.uid,
+      userModel.id,
       userModel.name,
       userModel.email,
       accessToken,

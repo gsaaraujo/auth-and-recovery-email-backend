@@ -2,14 +2,13 @@ import jwt from 'jsonwebtoken';
 
 import {
   forbidden,
-  HttpRequest,
   HttpResponse,
   ok,
   unauthorized,
 } from '../../../../app/helpers/http';
 import { NotAuthorizedError } from '../errors/not-authorized';
 
-export type AuthorizeUserParams = {
+export type AuthorizeUserRequest = {
   accessToken: string;
   userId: string;
 };
@@ -18,9 +17,8 @@ type Payload = {
   userId: string;
 };
 
-export class AuthorizeUserMiddleware {
-  authorize(httpRequest: HttpRequest<AuthorizeUserParams>): HttpResponse {
-    const { accessToken, userId } = httpRequest.data;
+export class AuthorizeUserController {
+  authorize({ accessToken, userId }: AuthorizeUserRequest): HttpResponse {
     const accessTokenRaw = accessToken?.replace('Bearer ', '');
 
     try {

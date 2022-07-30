@@ -1,9 +1,5 @@
 import { BaseError } from '../../common/errors/base-error';
 
-export type HttpRequest<T> = {
-  data: T;
-};
-
 export type HttpResponse = {
   statusCode: number;
   data: any;

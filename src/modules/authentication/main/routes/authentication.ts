@@ -1,15 +1,14 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import {
+  authorizeUserController,
   reauthorizeUserController,
   signInController,
 } from '../di/sign-in-controller';
-import { HttpRequest, HttpResponse } from '../../../../app/helpers/http';
+import { HttpResponse } from '../../../../app/helpers/http';
 import { BaseError } from '../../../../common/errors/base-error';
 import { SignInRequest } from '../../adapters/controllers/sign-in';
-import {
-  AuthorizeUserMiddleware,
-  AuthorizeUserParams,
-} from '../../adapters/middlewares/authorize-user';
+import { AuthorizeUserRequest } from '../../adapters/controllers/authorize-user';
+import { ReauthorizeUserRequest } from '../../adapters/controllers/reauthorize-user';
 
 const authenticationRouter = Router();
 
@@ -18,22 +17,23 @@ authenticationRouter.post(
   async (request: Request, response: Response) => {
     const { email, password } = request.body;
     const signInRequest: SignInRequest = { email: email, password: password };
-    const httpRequest: HttpRequest<SignInRequest> = { data: signInRequest };
     const httpResponse: HttpResponse = await signInController.handle(
-      httpRequest,
+      signInRequest,
     );
-    response.status(httpResponse.statusCode).json({ data: httpResponse.data });
+    response.status(httpResponse.statusCode).json(httpResponse.data);
   },
 );
 
 authenticationRouter.get(
   '/auth/new-access-token',
   async (request: Request, response: Response) => {
-    const accessToken = request.headers.authorization ?? '';
+    const reauthorizeUserRequest: ReauthorizeUserRequest = {
+      refreshToken: request.headers.authorization ?? '',
+    };
     const httpResponse: HttpResponse = await reauthorizeUserController.handle(
-      accessToken,
+      reauthorizeUserRequest,
     );
-    response.status(httpResponse.statusCode).json({ data: httpResponse.data });
+    response.status(httpResponse.statusCode).json(httpResponse.data);
   },
 );
 
@@ -41,22 +41,15 @@ authenticationRouter.use(
   async (request: Request, response: Response, next: NextFunction) => {
     const { userId } = request.body;
     const accessToken = request.headers.authorization ?? '';
-
-    const authorizeUserParams: AuthorizeUserParams = {
+    const authorizeUserParams: AuthorizeUserRequest = {
       accessToken: accessToken,
       userId: userId ?? '',
     };
-    const httpRequest: HttpRequest<AuthorizeUserParams> = {
-      data: authorizeUserParams,
-    };
-    const httpResponse: HttpResponse = new AuthorizeUserMiddleware().authorize(
-      httpRequest,
-    );
+    const httpResponse: HttpResponse =
+      authorizeUserController.authorize(authorizeUserParams);
 
     if (httpResponse.statusCode != 200) {
-      response
-        .status(httpResponse.statusCode)
-        .json({ data: httpResponse.data });
+      response.status(httpResponse.statusCode).json(httpResponse.data);
     }
 
     next();
