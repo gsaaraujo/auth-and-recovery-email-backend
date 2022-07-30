@@ -1,5 +1,4 @@
-import { HttpRequest } from '../app/helpers/http';
-import { NextFunction, Request, Response, Router } from 'express';
+import { Response, Router } from 'express';
 import { authenticationRouter } from '../modules/authentication/main/routes/authentication';
 
 export const router = Router();

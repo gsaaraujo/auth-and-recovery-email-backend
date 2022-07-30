@@ -1,6 +1,6 @@
 import { BaseError } from '../../../../common/errors/base-error';
 import { HttpResponse, unauthorized, ok } from '../../../../app/helpers/http';
-import { IReauthorizeUserService } from '../../data/services/services/interfaces/reauthorize-user';
+import { IReauthorizeUserService } from '../../data/services/interfaces/reauthorize-user';
 
 export type ReauthorizeUserRequest = {
   refreshToken: string;
