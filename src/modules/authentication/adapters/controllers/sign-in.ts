@@ -5,6 +5,8 @@ import {
   HttpResponse,
   internalServerError,
 } from '../../../../app/helpers/http';
+import { MissingParamError } from '../../../../common/errors/missing-param';
+import { ServerError } from '../../../../common/errors/server';
 import { UserSignedEntity } from '../../domain/entities/user-signed';
 import { ISignInUserUsecase } from '../../domain/usecases/sign-in-user';
 
@@ -20,6 +22,11 @@ export default class SignInController {
     try {
       const { email, password } = request.data;
 
+      if (!!!email.trim() || !!!password.trim()) {
+        const field = email.trim() == '' ? 'email' : 'password';
+        return badRequest(new MissingParamError(field));
+      }
+
       const userSignedOrError = await this.signInUsecase.execute(
         email,
         password,
@@ -27,7 +34,7 @@ export default class SignInController {
 
       if (userSignedOrError.isLeft()) {
         const error = userSignedOrError.value;
-        return badRequest(error.message);
+        return badRequest(error);
       }
 
       const userSignedEntity: UserSignedEntity = userSignedOrError.value;
@@ -40,7 +47,7 @@ export default class SignInController {
       };
       return ok(data);
     } catch (error) {
-      return internalServerError('server error');
+      return internalServerError(new ServerError('Server error !'));
     }
   }
 }

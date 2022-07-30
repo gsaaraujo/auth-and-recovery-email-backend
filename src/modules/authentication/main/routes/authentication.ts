@@ -12,10 +12,8 @@ const authenticationRouter = Router();
 authenticationRouter.post(
   '/auth/sign-in',
   async (request: Request, response: Response) => {
-    const signInRequest: SignInRequest = {
-      email: request.body,
-      password: request.body,
-    };
+    const { email, password } = request.body;
+    const signInRequest: SignInRequest = { email: email, password: password };
     const httpRequest = { data: signInRequest };
     const httpResponse: HttpResponse = await signInController.handle(
       httpRequest,

@@ -1,3 +1,5 @@
+import { BaseError } from '../../common/errors/base-error';
+
 export type HttpRequest<T> = {
   data: T;
 };
@@ -12,22 +14,22 @@ export const ok = (data: any): HttpResponse => ({
   data: data,
 });
 
-export const badRequest = (errorMessage: string): HttpResponse => ({
+export const badRequest = (error: BaseError): HttpResponse => ({
   statusCode: 400,
-  data: errorMessage,
+  data: error.message,
 });
 
-export const unauthorized = (errorMessage: string): HttpResponse => ({
+export const unauthorized = (error: BaseError): HttpResponse => ({
   statusCode: 401,
-  data: errorMessage,
+  data: error.message,
 });
 
-export const forbidden = (errorMessage: string): HttpResponse => ({
+export const forbidden = (error: BaseError): HttpResponse => ({
   statusCode: 403,
-  data: errorMessage,
+  data: error.message,
 });
 
-export const internalServerError = (errorMessage: string): HttpResponse => ({
+export const internalServerError = (error: BaseError): HttpResponse => ({
   statusCode: 500,
-  data: errorMessage,
+  data: error.message,
 });
