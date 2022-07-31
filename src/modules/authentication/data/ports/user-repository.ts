@@ -3,5 +3,5 @@ import { Either } from '../../../../app/helpers/either';
 import { BaseError } from '../../../../common/errors/base-error';
 
 export interface IUserRepository {
-  findOneByEmail(email: string): Promise<Either<BaseError, UserModel>>;
+  findOneByEmail(email: string): Promise<Either<BaseError, UserModel | null>>;
 }

@@ -42,7 +42,14 @@ export class SignInUserUsecase implements ISignInUserUsecase {
       return left(error);
     }
 
-    const userModel: UserModel = userModelOrError.value;
+    const userModel: UserModel | null = userModelOrError.value;
+
+    if (!userModel) {
+      return left(
+        new UserNotAuthenticatedError('Email or password is incorrect.'),
+      );
+    }
+
     const isUserAuth: boolean = await bcryptjs.compare(
       userCredentialsEntity.password,
       userModel.password,
