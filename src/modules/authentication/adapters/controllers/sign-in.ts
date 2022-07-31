@@ -5,9 +5,12 @@ import {
   internalServerError,
 } from '../../../../app/helpers/http';
 import { ServerError } from '../../../../common/errors/server';
-import { UserSignedEntity } from '../../domain/entities/user-signed';
 import { MissingParamError } from '../../../../common/errors/missing-param';
-import { ISignInUserUsecase } from '../../data/usecases/interfaces/sign-in-user';
+import {
+  ISignInUserUsecase,
+  userCredentialsDTO,
+  UserSignedDTO,
+} from '../../data/usecases/interfaces/sign-in-user';
 
 export type SignInRequest = {
   email: string;
@@ -24,9 +27,9 @@ export default class SignInController {
         return badRequest(new MissingParamError(field));
       }
 
+      const userCredentialsDTO: userCredentialsDTO = { email, password };
       const userSignedOrError = await this.signInUsecase.execute(
-        email,
-        password,
+        userCredentialsDTO,
       );
 
       if (userSignedOrError.isLeft()) {
@@ -34,8 +37,8 @@ export default class SignInController {
         return badRequest(error);
       }
 
-      const userSignedEntity: UserSignedEntity = userSignedOrError.value;
-      return ok(userSignedEntity);
+      const userSignedDTO: UserSignedDTO = userSignedOrError.value;
+      return ok(userSignedDTO);
     } catch (error) {
       return internalServerError(new ServerError('Server error !'));
     }

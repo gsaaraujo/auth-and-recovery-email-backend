@@ -3,9 +3,12 @@ import bcryptjs from 'bcryptjs';
 
 import { UserModel } from '../models/user';
 import { IUserRepository } from '../ports/user-repository';
-import { ISignInUserUsecase } from './interfaces/sign-in-user';
+import {
+  ISignInUserUsecase,
+  userCredentialsDTO,
+  UserSignedDTO,
+} from './interfaces/sign-in-user';
 import { BaseError } from '../../../../common/errors/base-error';
-import { UserSignedEntity } from '../../domain/entities/user-signed';
 import { Either, left, right } from '../../../../app/helpers/either';
 import { UserNotAuthenticatedError } from '../errors/user-not-authenticated';
 import { UserCredentialsEntity } from '../../domain/entities/user-credentials';
@@ -13,10 +16,10 @@ import { UserCredentialsEntity } from '../../domain/entities/user-credentials';
 export class SignInUserUsecase implements ISignInUserUsecase {
   constructor(private readonly userRepository: IUserRepository) {}
 
-  async execute(
-    email: string,
-    password: string,
-  ): Promise<Either<BaseError, UserSignedEntity>> {
+  async execute({
+    email,
+    password,
+  }: userCredentialsDTO): Promise<Either<BaseError, UserSignedDTO>> {
     const userCredentialsEntityOrError = UserCredentialsEntity.create(
       email,
       password,
@@ -63,14 +66,14 @@ export class SignInUserUsecase implements ISignInUserUsecase {
       { expiresIn: process.env.REFRESH_TOKEN_EXPIRATION ?? '30d' },
     );
 
-    const userSignedEntity = new UserSignedEntity(
-      userModel.id,
-      userModel.name,
-      userModel.email,
+    const userSignedDTO: UserSignedDTO = {
+      id: userModel.id,
+      name: userModel.name,
+      email: userModel.email,
       accessToken,
       refreshToken,
-    );
+    };
 
-    return right(userSignedEntity);
+    return right(userSignedDTO);
   }
 }

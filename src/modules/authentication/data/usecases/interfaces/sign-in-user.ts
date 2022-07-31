@@ -1,10 +1,18 @@
-import { UserSignedEntity } from '../../../domain/entities/user-signed';
 import { Either } from '../../../../../app/helpers/either';
 import { BaseError } from '../../../../../common/errors/base-error';
 
+export type userCredentialsDTO = {
+  email: string;
+  password: string;
+};
+
+export type UserSignedDTO = {
+  id: string;
+  name: string;
+  email: string;
+  accessToken: string;
+  refreshToken: string;
+};
 export interface ISignInUserUsecase {
-  execute(
-    email: string,
-    password: string,
-  ): Promise<Either<BaseError, UserSignedEntity>>;
+  execute(input: userCredentialsDTO): Promise<Either<BaseError, UserSignedDTO>>;
 }
