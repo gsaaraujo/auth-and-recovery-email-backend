@@ -4,13 +4,11 @@ import {
   HttpResponse,
   internalServerError,
 } from '../../../../app/helpers/http';
+import { UserSignedDTO } from '../../data/dtos/user-signed';
 import { ServerError } from '../../../../common/errors/server';
+import { UserCredentialsDTO } from '../../data/dtos/user-credentials';
 import { MissingParamError } from '../../../../common/errors/missing-param';
-import {
-  ISignInUserUsecase,
-  userCredentialsDTO,
-  UserSignedDTO,
-} from '../../data/usecases/interfaces/sign-in-user';
+import { ISignInUserUsecase } from '../../data/usecases/interfaces/sign-in-user';
 
 export type SignInRequest = {
   email: string;
@@ -27,7 +25,7 @@ export default class SignInController {
         return badRequest(new MissingParamError(field));
       }
 
-      const userCredentialsDTO: userCredentialsDTO = { email, password };
+      const userCredentialsDTO: UserCredentialsDTO = { email, password };
       const userSignedOrError = await this.signInUsecase.execute(
         userCredentialsDTO,
       );

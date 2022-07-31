@@ -2,12 +2,10 @@ import jwt from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
 
 import { UserModel } from '../models/user';
+import { UserSignedDTO } from '../dtos/user-signed';
 import { IUserRepository } from '../ports/user-repository';
-import {
-  ISignInUserUsecase,
-  userCredentialsDTO,
-  UserSignedDTO,
-} from './interfaces/sign-in-user';
+import { UserCredentialsDTO } from '../dtos/user-credentials';
+import { ISignInUserUsecase } from './interfaces/sign-in-user';
 import { BaseError } from '../../../../common/errors/base-error';
 import { Either, left, right } from '../../../../app/helpers/either';
 import { UserNotAuthenticatedError } from '../errors/user-not-authenticated';
@@ -19,7 +17,7 @@ export class SignInUserUsecase implements ISignInUserUsecase {
   async execute({
     email,
     password,
-  }: userCredentialsDTO): Promise<Either<BaseError, UserSignedDTO>> {
+  }: UserCredentialsDTO): Promise<Either<BaseError, UserSignedDTO>> {
     const userCredentialsEntityOrError = UserCredentialsEntity.create(
       email,
       password,

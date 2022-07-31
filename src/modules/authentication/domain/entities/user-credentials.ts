@@ -27,20 +27,14 @@ export class UserCredentialsEntity {
       );
     }
 
+    if (password.length > 50) {
+      return new InvalidPasswordError(
+        'The password is too long. It must be less than 50 characters.',
+      );
+    }
+
     if (!isEmailValid(email)) {
       return new InvalidEmailError('The email must be a valid email.');
-    }
-
-    if (password.length < 4) {
-      return new InvalidPasswordError(
-        'The password is too short. It must be between 4-8 characters',
-      );
-    }
-
-    if (password.length > 8) {
-      return new InvalidPasswordError(
-        'The password is too long. It must be between 4-8 characters',
-      );
     }
   }
 }

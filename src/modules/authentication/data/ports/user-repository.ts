@@ -4,4 +4,5 @@ import { BaseError } from '../../../../common/errors/base-error';
 
 export interface IUserRepository {
   findOneByEmail(email: string): Promise<Either<BaseError, UserModel | null>>;
+  create(user: UserModel): Promise<Either<BaseError, UserModel>>;
 }

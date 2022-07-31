@@ -6,6 +6,8 @@ import { AuthorizeUserRequest } from '../../adapters/controllers/authorize-user'
 import { ReauthorizeUserRequest } from '../../adapters/controllers/reauthorize-user';
 import { authorizeUserController } from '../factories/authorize-user';
 import { reauthorizeUserController } from '../factories/reauthorize-user';
+import { SignUpRequest } from '../../adapters/controllers/sign-up';
+import { signUpController } from '../factories/sign-up';
 
 const authenticationRouter = Router();
 
@@ -13,9 +15,21 @@ authenticationRouter.post(
   '/auth/sign-in',
   async (request: Request, response: Response) => {
     const { email, password } = request.body;
-    const signInRequest: SignInRequest = { email: email, password: password };
+    const signInRequest: SignInRequest = { email, password };
     const httpResponse: HttpResponse = await signInController.handle(
       signInRequest,
+    );
+    response.status(httpResponse.statusCode).json(httpResponse.data);
+  },
+);
+
+authenticationRouter.post(
+  '/auth/sign-up',
+  async (request: Request, response: Response) => {
+    const { name, email, password } = request.body;
+    const signUpRequest: SignUpRequest = { name, email, password };
+    const httpResponse: HttpResponse = await signUpController.handle(
+      signUpRequest,
     );
     response.status(httpResponse.statusCode).json(httpResponse.data);
   },
