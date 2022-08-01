@@ -3,7 +3,7 @@ import bcryptjs from 'bcryptjs';
 
 import { UserSignedDTO } from '../dtos/user-signed';
 import { IUserRepository } from '../ports/user-repository';
-import { UserRegisterInfo } from '../dtos/user-register-info';
+import { UserRegisterDTO } from '../dtos/user-register';
 import { ISignUpUserUsecase } from './interfaces/sign-up-user';
 import { BaseError } from '../../../../common/errors/base-error';
 import { Either, left, right } from '../../../../app/helpers/either';
@@ -16,7 +16,7 @@ export class SignUpUserUsecase implements ISignUpUserUsecase {
     name,
     email,
     password,
-  }: UserRegisterInfo): Promise<Either<BaseError, UserSignedDTO>> {
+  }: UserRegisterDTO): Promise<Either<BaseError, UserSignedDTO>> {
     const userRegisterEntityOrError = UserRegisterEntity.create(
       name,
       email,

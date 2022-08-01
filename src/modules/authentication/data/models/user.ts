@@ -1,8 +1,6 @@
-export class UserModel {
-  constructor(
-    public readonly id: string,
-    public readonly name: string,
-    public readonly email: string,
-    public readonly password: string,
-  ) {}
-}
+export type UserModel = {
+  id: string;
+  name: string;
+  email: string;
+  password: string;
+};

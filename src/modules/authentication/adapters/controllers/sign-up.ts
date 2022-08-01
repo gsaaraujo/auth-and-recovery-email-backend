@@ -8,7 +8,7 @@ import {
 import { BaseError } from '../../../../common/errors/base-error';
 import { MissingParamError } from '../../../../common/errors/missing-param';
 import { ServerError } from '../../../../common/errors/server';
-import { UserRegisterInfo } from '../../data/dtos/user-register-info';
+import { UserRegisterDTO } from '../../data/dtos/user-register';
 import { UserSignedDTO } from '../../data/dtos/user-signed';
 import { ISignUpUserUsecase } from '../../data/usecases/interfaces/sign-up-user';
 
@@ -33,14 +33,14 @@ export class SignUpController {
         return badRequest(new MissingParamError(field));
       }
 
-      const userRegisterInfo: UserRegisterInfo = {
+      const userRegisterDTO: UserRegisterDTO = {
         name,
         email,
         password,
       };
 
       const userSignedOrError = await this.signUpUserUsecase.execute(
-        userRegisterInfo,
+        userRegisterDTO,
       );
 
       if (userSignedOrError.isLeft()) {
