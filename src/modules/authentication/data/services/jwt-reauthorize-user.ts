@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { Either, left, right } from '../../../../app/helpers/either';
 import { IReauthorizeUserService } from './interfaces/reauthorize-user';
 import { BaseError } from '../../../../common/errors/base-error';
-import { NotAuthorizedError } from '../../adapters/errors/not-authorized';
+import { NotAuthorizedError } from '../../infra/errors/not-authorized';
 
 type Payload = {
   userId: string;

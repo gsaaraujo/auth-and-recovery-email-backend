@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response, Router } from 'express';
 import { signInController } from '../factories/sign-in';
 import { HttpResponse } from '../../../../app/helpers/http';
-import { SignInRequest } from '../../adapters/controllers/sign-in';
-import { AuthorizeUserRequest } from '../../adapters/controllers/authorize-user';
-import { ReauthorizeUserRequest } from '../../adapters/controllers/reauthorize-user';
+import { SignInRequest } from '../../infra/controllers/sign-in';
+import { AuthorizeUserRequest } from '../../infra/controllers/authorize-user';
+import { ReauthorizeUserRequest } from '../../infra/controllers/reauthorize-user';
 import { authorizeUserController } from '../factories/authorize-user';
 import { reauthorizeUserController } from '../factories/reauthorize-user';
-import { SignUpRequest } from '../../adapters/controllers/sign-up';
+import { SignUpRequest } from '../../infra/controllers/sign-up';
 import { signUpController } from '../factories/sign-up';
 
 const authenticationRouter = Router();

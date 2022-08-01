@@ -18,12 +18,12 @@ export class PrismaUserRepository implements IUserRepository {
         data: { id, name, email, password },
       });
 
-      const userModel: UserModel = new UserModel(
-        user.id,
-        user.name,
-        user.email,
-        user.password,
-      );
+      const userModel: UserModel = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        password: user.password,
+      };
 
       return right(userModel);
     } catch (error) {
@@ -51,12 +51,12 @@ export class PrismaUserRepository implements IUserRepository {
 
       if (user == null) return right(null);
 
-      const userModel: UserModel = new UserModel(
-        user.id,
-        user.name,
-        user.email,
-        user.password,
-      );
+      const userModel: UserModel = {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        password: user.password,
+      };
 
       return right(userModel);
     } catch (error) {

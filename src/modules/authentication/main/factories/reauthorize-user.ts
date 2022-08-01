@@ -1,4 +1,4 @@
-import { ReauthorizeUserController } from '../../adapters/controllers/reauthorize-user';
+import { ReauthorizeUserController } from '../../infra/controllers/reauthorize-user';
 import { JWTReauthorizeUserService } from '../../data/services/jwt-reauthorize-user';
 
 const jwtReauthorizeUserService = new JWTReauthorizeUserService();
