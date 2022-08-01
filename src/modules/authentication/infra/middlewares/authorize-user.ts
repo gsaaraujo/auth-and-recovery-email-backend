@@ -17,7 +17,7 @@ type Payload = {
   userId: string;
 };
 
-export class AuthorizeUserController {
+export class AuthorizeUserMiddleware {
   authorize({ accessToken, userId }: AuthorizeUserRequest): HttpResponse {
     const accessTokenRaw = accessToken?.replace('Bearer ', '');
 

@@ -1,3 +1,3 @@
-import { AuthorizeUserController } from '../../infra/controllers/authorize-user';
+import { AuthorizeUserMiddleware } from '../../infra/middlewares/authorize-user';
 
-export const authorizeUserController = new AuthorizeUserController();
+export const authorizeUserMiddleware = new AuthorizeUserMiddleware();

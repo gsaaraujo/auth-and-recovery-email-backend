@@ -2,9 +2,9 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { signInController } from '../factories/sign-in';
 import { HttpResponse } from '../../../../app/helpers/http';
 import { SignInRequest } from '../../infra/controllers/sign-in';
-import { AuthorizeUserRequest } from '../../infra/controllers/authorize-user';
+import { AuthorizeUserRequest } from '../../infra/middlewares/authorize-user';
 import { ReauthorizeUserRequest } from '../../infra/controllers/reauthorize-user';
-import { authorizeUserController } from '../factories/authorize-user';
+import { authorizeUserMiddleware } from '../factories/authorize-user';
 import { reauthorizeUserController } from '../factories/reauthorize-user';
 import { SignUpRequest } from '../../infra/controllers/sign-up';
 import { signUpController } from '../factories/sign-up';
@@ -52,12 +52,12 @@ authenticationRouter.use(
   async (request: Request, response: Response, next: NextFunction) => {
     const { userId } = request.body;
     const accessToken = request.headers.authorization ?? '';
-    const authorizeUserParams: AuthorizeUserRequest = {
+    const authorizeUserRequest: AuthorizeUserRequest = {
       accessToken: accessToken,
       userId: userId ?? '',
     };
     const httpResponse: HttpResponse =
-      authorizeUserController.authorize(authorizeUserParams);
+      authorizeUserMiddleware.authorize(authorizeUserRequest);
 
     if (httpResponse.statusCode != 200) {
       response.status(httpResponse.statusCode).json(httpResponse.data);
