@@ -8,6 +8,8 @@ import { authorizeUserMiddleware } from '../factories/authorize-user';
 import { reauthorizeUserController } from '../factories/reauthorize-user';
 import { SignUpRequest } from '../../infra/controllers/sign-up';
 import { signUpController } from '../factories/sign-up';
+import { GenerateRecoveryCodeRequest } from '../../infra/controllers/generate-recovery-code';
+import { generateRecoveryCodeController } from '../factories/generate-recovery-code';
 
 const authenticationRouter = Router();
 
@@ -31,6 +33,17 @@ authenticationRouter.post(
     const httpResponse: HttpResponse = await signUpController.handle(
       signUpRequest,
     );
+    response.status(httpResponse.statusCode).json(httpResponse.data);
+  },
+);
+
+authenticationRouter.post(
+  '/auth/get-recovery-code',
+  async (request: Request, response: Response) => {
+    const { email } = request.body;
+    const generateRecoveryCodeRequest: GenerateRecoveryCodeRequest = { email };
+    const httpResponse: HttpResponse =
+      await generateRecoveryCodeController.handle(generateRecoveryCodeRequest);
     response.status(httpResponse.statusCode).json(httpResponse.data);
   },
 );

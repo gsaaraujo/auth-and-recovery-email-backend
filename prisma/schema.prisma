@@ -11,12 +11,24 @@ datasource db {
 }
 
 model User {
+  id           String         @id
+  name         String         @db.VarChar(255)
+  email        String         @unique @db.VarChar(255)
+  password     String         @unique @db.VarChar(255)
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @default(now())
+  RecoveryCode RecoveryCode[]
+
+  @@map("users")
+}
+
+model RecoveryCode {
   id         String   @id
-  name       String   @db.VarChar(255)
-  email      String   @unique @db.VarChar(255)
-  password   String   @unique @db.VarChar(255)
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String   @unique
+  code       String   @db.VarChar(4)
   created_at DateTime @default(now())
   updated_at DateTime @default(now())
 
-  @@map("users")
+  @@map("recovery_codes")
 }
