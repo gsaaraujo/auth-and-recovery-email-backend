@@ -5,7 +5,7 @@ import { UserSignedDTO } from '../dtos/user-signed';
 import { IUserRepository } from '../ports/user-repository';
 import { UserRegisterDTO } from '../dtos/user-register';
 import { ISignUpUserUsecase } from './interfaces/sign-up-user';
-import { BaseError } from '../../../../common/errors/base-error';
+import { ApiError } from '../../../../common/errors/api-error';
 import { Either, left, right } from '../../../../app/helpers/either';
 import { UserRegisterEntity } from '../../domain/entities/user-register';
 
@@ -16,7 +16,7 @@ export class SignUpUserUsecase implements ISignUpUserUsecase {
     name,
     email,
     password,
-  }: UserRegisterDTO): Promise<Either<BaseError, UserSignedDTO>> {
+  }: UserRegisterDTO): Promise<Either<ApiError, UserSignedDTO>> {
     const userRegisterEntityOrError = UserRegisterEntity.create(
       name,
       email,
@@ -24,7 +24,7 @@ export class SignUpUserUsecase implements ISignUpUserUsecase {
     );
 
     if (userRegisterEntityOrError.isLeft()) {
-      const error: BaseError = userRegisterEntityOrError.value;
+      const error: ApiError = userRegisterEntityOrError.value;
       return left(error);
     }
 
@@ -44,7 +44,7 @@ export class SignUpUserUsecase implements ISignUpUserUsecase {
     });
 
     if (userModelOrError.isLeft()) {
-      const error: BaseError = userModelOrError.value;
+      const error: ApiError = userModelOrError.value;
       return left(error);
     }
 
@@ -62,7 +62,7 @@ export class SignUpUserUsecase implements ISignUpUserUsecase {
       { expiresIn: process.env.REFRESH_TOKEN_EXPIRATION ?? '30d' },
     );
 
-    const userSignedDTO: UserSignedDTO = {
+    const userSigned: UserSignedDTO = {
       id: userModel.id,
       name: userModel.name,
       email: userModel.email,
@@ -70,6 +70,6 @@ export class SignUpUserUsecase implements ISignUpUserUsecase {
       refreshToken,
     };
 
-    return right(userSignedDTO);
+    return right(userSigned);
   }
 }

@@ -1,5 +1,5 @@
 import { Either } from '../../../../app/helpers/either';
-import { BaseError } from '../../../../common/errors/base-error';
+import { ApiError } from '../../../../common/errors/api-error';
 
 export type EmailOptions = {
   host: string;
@@ -13,5 +13,5 @@ export type EmailOptions = {
 };
 
 export interface IEmailService {
-  send(options: EmailOptions): Promise<Either<BaseError, EmailOptions>>;
+  send(options: EmailOptions): Promise<Either<ApiError, EmailOptions>>;
 }

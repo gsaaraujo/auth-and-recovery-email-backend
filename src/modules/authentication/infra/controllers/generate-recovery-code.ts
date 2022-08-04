@@ -1,11 +1,5 @@
-import { BaseError } from '../../../../common/errors/base-error';
-import {
-  badRequest,
-  HttpResponse,
-  internalServerError,
-  ok,
-} from '../../../../app/helpers/http';
-import { MissingParamError } from '../../../../common/errors/missing-param';
+import { ApiError } from '../../../../common/errors/api-error';
+import { HttpResponse, StatusCode } from '../../../../app/helpers/http';
 import {
   IGenerateRecoveryCodeUsecase,
   UserEmailDTO,
@@ -22,27 +16,31 @@ export class GenerateRecoveryCodeController {
   ) {}
 
   async handle({ email }: GenerateRecoveryCodeRequest): Promise<HttpResponse> {
-    try {
-      if (!!!email.trim()) {
-        return badRequest(new MissingParamError(email));
-      }
-
-      const userEmailDTO: UserEmailDTO = { email };
-      const OrError = await this.generateRecoveryCodeUsecase.execute(
-        userEmailDTO,
-      );
-
-      if (OrError.isLeft()) {
-        const error: BaseError = OrError.value;
-        return badRequest(error);
-      }
-
-      const DTO = OrError.value;
-      OrError;
-
-      return ok(DTO);
-    } catch (error) {
-      return internalServerError(new ServerError('Server error !'));
+    if (!!!email.trim()) {
+      return {
+        statusCode: StatusCode.BAD_REQUEST,
+        data: `The ${email} must not be empty.`,
+      };
     }
+
+    const userEmail: UserEmailDTO = { email };
+    const recoveryCodeOrError = await this.generateRecoveryCodeUsecase.execute(
+      userEmail,
+    );
+
+    if (recoveryCodeOrError.isLeft()) {
+      const error: ApiError = recoveryCodeOrError.value;
+      return {
+        statusCode: error.status,
+        data: error.message,
+      };
+    }
+
+    const recoveryCode = recoveryCodeOrError.value;
+
+    return {
+      statusCode: StatusCode.OK,
+      data: recoveryCode.code,
+    };
   }
 }

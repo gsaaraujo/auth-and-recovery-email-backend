@@ -1,5 +1,5 @@
 import { Either } from '../../../../../app/helpers/either';
-import { BaseError } from '../../../../../common/errors/base-error';
+import { ApiError } from '../../../../../common/errors/api-error';
 
 export type UserEmailDTO = {
   email: string;
@@ -10,5 +10,5 @@ export type RecoveryCodeDTO = {
 };
 
 export interface IGenerateRecoveryCodeUsecase {
-  execute(input: UserEmailDTO): Promise<Either<BaseError, RecoveryCodeDTO>>;
+  execute(input: UserEmailDTO): Promise<Either<ApiError, RecoveryCodeDTO>>;
 }

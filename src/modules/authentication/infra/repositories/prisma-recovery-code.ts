@@ -1,8 +1,9 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import { Either, left, right } from '../../../../app/helpers/either';
-import { BaseError } from '../../../../common/errors/base-error';
+import { StatusCode } from '../../../../app/helpers/http';
+import { ApiError } from '../../../../common/errors/api-error';
 import { DatabaseError } from '../../../../common/errors/database';
 import { RecoveryCodeModel } from '../../data/models/recovery-code';
+import { Either, left, right } from '../../../../app/helpers/either';
 import { IRecoveryCodeRepository } from '../../data/ports/recovery-code-repository';
 
 export class PrismaRecoveryCodeRepository implements IRecoveryCodeRepository {
@@ -12,7 +13,7 @@ export class PrismaRecoveryCodeRepository implements IRecoveryCodeRepository {
     id,
     userId,
     code,
-  }: RecoveryCodeModel): Promise<Either<BaseError, RecoveryCodeModel>> {
+  }: RecoveryCodeModel): Promise<Either<ApiError, RecoveryCodeModel>> {
     try {
       const recoveryCode = await this.prisma.recoveryCode.upsert({
         create: { id, userId, code },
@@ -29,10 +30,18 @@ export class PrismaRecoveryCodeRepository implements IRecoveryCodeRepository {
       return right(recoveryCode);
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        return left(new DatabaseError(error.message));
+        const databaseError = new DatabaseError(
+          StatusCode.BAD_GATEWAY,
+          error.message,
+        );
+        return left(databaseError);
       }
 
-      return left(new DatabaseError('Database error'));
+      const databaseError = new DatabaseError(
+        StatusCode.BAD_GATEWAY,
+        'Database error.',
+      );
+      return left(databaseError);
     }
   }
 }

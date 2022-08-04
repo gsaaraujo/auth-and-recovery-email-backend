@@ -1,12 +1,13 @@
 import nodemailer from 'nodemailer';
 
 import { Either, left, right } from '../../../../app/helpers/either';
-import { BaseError } from '../../../../common/errors/base-error';
+import { StatusCode } from '../../../../app/helpers/http';
+import { ApiError } from '../../../../common/errors/api-error';
 import { EmailServiceError } from '../../data/errors/email-service';
 import { EmailOptions, IEmailService } from '../../data/ports/email-service';
 
 export class NodemailerEmailService implements IEmailService {
-  async send(options: EmailOptions): Promise<Either<BaseError, EmailOptions>> {
+  async send(options: EmailOptions): Promise<Either<ApiError, EmailOptions>> {
     try {
       const transporter = nodemailer.createTransport({
         host: options.host,
@@ -18,7 +19,7 @@ export class NodemailerEmailService implements IEmailService {
         },
       });
 
-      const info = await transporter.sendMail({
+      await transporter.sendMail({
         from: options.from,
         to: options.to,
         subject: options.subject,
@@ -27,7 +28,11 @@ export class NodemailerEmailService implements IEmailService {
 
       return right(options);
     } catch (error) {
-      return left(new EmailServiceError('Service error'));
+      const emailServiceError = new EmailServiceError(
+        StatusCode.BAD_GATEWAY,
+        'Service error',
+      );
+      return left(emailServiceError);
     }
   }
 }

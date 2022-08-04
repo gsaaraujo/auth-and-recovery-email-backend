@@ -1,5 +1,5 @@
-import { BaseError } from '../../../../common/errors/base-error';
-import { HttpResponse, unauthorized, ok } from '../../../../app/helpers/http';
+import { HttpResponse, StatusCode } from '../../../../app/helpers/http';
+import { ApiError } from '../../../../common/errors/api-error';
 import { IReauthorizeUserService } from '../../data/services/interfaces/reauthorize-user';
 
 export type ReauthorizeUserRequest = {
@@ -19,11 +19,17 @@ export class ReauthorizeUserController {
     );
 
     if (newAccessTokenOrError.isLeft()) {
-      const error: BaseError = newAccessTokenOrError.value;
-      return unauthorized(error);
+      const error: ApiError = newAccessTokenOrError.value;
+      return {
+        statusCode: error.status,
+        data: error.message,
+      };
     }
 
     const newAccessToken: string = newAccessTokenOrError.value;
-    return ok(newAccessToken);
+    return {
+      statusCode: StatusCode.OK,
+      data: newAccessToken,
+    };
   }
 }

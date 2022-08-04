@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
 import { Either, left, right } from '../../../../app/helpers/either';
-import { BaseError } from '../../../../common/errors/base-error';
+import { ApiError } from '../../../../common/errors/api-error';
 import { UserEmailEntity } from '../../domain/entities/user-email';
 import { UserNotFoundError } from '../errors/user-not-found';
 import { RecoveryCodeModel } from '../models/recovery-code';
@@ -26,11 +26,11 @@ export class GenerateRecoveryCodeUsecase
 
   async execute({
     email,
-  }: UserEmailDTO): Promise<Either<BaseError, RecoveryCodeDTO>> {
+  }: UserEmailDTO): Promise<Either<ApiError, RecoveryCodeDTO>> {
     const userEmailEntityOrError = UserEmailEntity.create(email);
 
     if (userEmailEntityOrError.isLeft()) {
-      const error: BaseError = userEmailEntityOrError.value;
+      const error: ApiError = userEmailEntityOrError.value;
       return left(error);
     }
 
@@ -41,7 +41,7 @@ export class GenerateRecoveryCodeUsecase
     );
 
     if (userModelOrError.isLeft()) {
-      const error: BaseError = userModelOrError.value;
+      const error: ApiError = userModelOrError.value;
       return left(error);
     }
 
@@ -68,7 +68,7 @@ export class GenerateRecoveryCodeUsecase
     );
 
     if (recoveryCodeOrError.isLeft()) {
-      const error: BaseError = recoveryCodeOrError.value;
+      const error: ApiError = recoveryCodeOrError.value;
       return left(error);
     }
 
@@ -84,7 +84,7 @@ export class GenerateRecoveryCodeUsecase
     });
 
     if (sentOrError.isLeft()) {
-      const error: BaseError = sentOrError.value;
+      const error: ApiError = sentOrError.value;
       return left(error);
     }
 

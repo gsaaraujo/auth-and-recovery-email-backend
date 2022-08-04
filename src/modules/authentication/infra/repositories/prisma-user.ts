@@ -1,9 +1,10 @@
 import { UserModel } from '../../data/models/user';
 import { Prisma, PrismaClient, User } from '@prisma/client';
-import { BaseError } from '../../../../common/errors/base-error';
+import { ApiError } from '../../../../common/errors/api-error';
 import { IUserRepository } from '../../data/ports/user-repository';
 import { Either, left, right } from '../../../../app/helpers/either';
 import { DatabaseError } from '../../../../common/errors/database';
+import { StatusCode } from '../../../../app/helpers/http';
 
 export class PrismaUserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -12,7 +13,7 @@ export class PrismaUserRepository implements IUserRepository {
     name,
     email,
     password,
-  }: UserModel): Promise<Either<BaseError, UserModel>> {
+  }: UserModel): Promise<Either<ApiError, UserModel>> {
     try {
       const user: User | null = await this.prisma.user.create({
         data: { id, name, email, password },
@@ -29,21 +30,25 @@ export class PrismaUserRepository implements IUserRepository {
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
         if (error.code === 'P2002') {
-          return left(
-            new DatabaseError(
-              'The email address is already associated with another account.',
-            ),
+          const databaseError = new DatabaseError(
+            StatusCode.INTERNAL_SERVER_ERROR,
+            'The email address is already associated with another account.',
           );
+          return left(databaseError);
         }
       }
 
-      return left(new DatabaseError('Database error'));
+      const databaseError = new DatabaseError(
+        StatusCode.BAD_GATEWAY,
+        'Database error.',
+      );
+      return left(databaseError);
     }
   }
 
   async findOneByEmail(
     email: string,
-  ): Promise<Either<BaseError, UserModel | null>> {
+  ): Promise<Either<ApiError, UserModel | null>> {
     try {
       const user: User | null = await this.prisma.user.findUnique({
         where: { email },
@@ -60,7 +65,11 @@ export class PrismaUserRepository implements IUserRepository {
 
       return right(userModel);
     } catch (error) {
-      return left(new DatabaseError('Database error'));
+      const databaseError = new DatabaseError(
+        StatusCode.BAD_GATEWAY,
+        'Database error.',
+      );
+      return left(databaseError);
     }
   }
 }

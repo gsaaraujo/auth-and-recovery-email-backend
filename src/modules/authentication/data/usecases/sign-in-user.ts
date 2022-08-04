@@ -6,10 +6,11 @@ import { UserSignedDTO } from '../dtos/user-signed';
 import { IUserRepository } from '../ports/user-repository';
 import { UserCredentialsDTO } from '../dtos/user-credentials';
 import { ISignInUserUsecase } from './interfaces/sign-in-user';
-import { BaseError } from '../../../../common/errors/base-error';
+import { ApiError } from '../../../../common/errors/api-error';
 import { Either, left, right } from '../../../../app/helpers/either';
 import { UserNotAuthenticatedError } from '../errors/user-not-authenticated';
 import { UserCredentialsEntity } from '../../domain/entities/user-credentials';
+import { StatusCode } from '../../../../app/helpers/http';
 
 export class SignInUserUsecase implements ISignInUserUsecase {
   constructor(private readonly userRepository: IUserRepository) {}
@@ -17,14 +18,14 @@ export class SignInUserUsecase implements ISignInUserUsecase {
   async execute({
     email,
     password,
-  }: UserCredentialsDTO): Promise<Either<BaseError, UserSignedDTO>> {
+  }: UserCredentialsDTO): Promise<Either<ApiError, UserSignedDTO>> {
     const userCredentialsEntityOrError = UserCredentialsEntity.create(
       email,
       password,
     );
 
     if (userCredentialsEntityOrError.isLeft()) {
-      const error: BaseError = userCredentialsEntityOrError.value;
+      const error: ApiError = userCredentialsEntityOrError.value;
       return left(error);
     }
 
@@ -36,16 +37,18 @@ export class SignInUserUsecase implements ISignInUserUsecase {
     );
 
     if (userModelOrError.isLeft()) {
-      const error: BaseError = userModelOrError.value;
+      const error: ApiError = userModelOrError.value;
       return left(error);
     }
 
     const userModel: UserModel | null = userModelOrError.value;
 
     if (!userModel) {
-      return left(
-        new UserNotAuthenticatedError('Email or password is incorrect.'),
+      const notAuthorizedError = new UserNotAuthenticatedError(
+        StatusCode.UNAUTHORIZED,
+        'Email or password is incorrect.',
       );
+      return left(notAuthorizedError);
     }
 
     const isUserAuth: boolean = await bcryptjs.compare(
@@ -54,9 +57,11 @@ export class SignInUserUsecase implements ISignInUserUsecase {
     );
 
     if (!isUserAuth) {
-      return left(
-        new UserNotAuthenticatedError('Email or password is incorrect.'),
+      const notAuthorizedError = new UserNotAuthenticatedError(
+        StatusCode.UNAUTHORIZED,
+        'Email or password is incorrect.',
       );
+      return left(notAuthorizedError);
     }
 
     const accessToken: string = jwt.sign(

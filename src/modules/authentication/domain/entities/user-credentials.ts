@@ -1,8 +1,9 @@
 import { InvalidEmailError } from '../errors/invalid-email';
-import { BaseError } from '../../../../common/errors/base-error';
+import { ApiError } from '../../../../common/errors/api-error';
 import { InvalidPasswordError } from '../errors/invalid-password';
 import { Either, left, right } from '../../../../app/helpers/either';
 import { isEmailValid } from '../../../../app/utils/email-validation';
+import { StatusCode } from '../../../../app/helpers/http';
 
 export class UserCredentialsEntity {
   private constructor(
@@ -13,28 +14,20 @@ export class UserCredentialsEntity {
   public static create(
     email: string,
     password: string,
-  ): Either<BaseError, UserCredentialsEntity> {
-    const validate: BaseError | void = this.validate(email, password);
+  ): Either<ApiError, UserCredentialsEntity> {
+    const validate: ApiError | void = this.validate(email, password);
 
     if (!!validate) return left(validate);
     return right(new UserCredentialsEntity(email, password));
   }
 
-  private static validate(email: string, password: string): BaseError | void {
-    if (email.length > 50) {
-      return new InvalidEmailError(
-        'The email is too long. It must be less than 50 characters.',
-      );
-    }
-
-    if (password.length > 50) {
-      return new InvalidPasswordError(
-        'The password is too long. It must be less than 50 characters.',
-      );
-    }
-
+  private static validate(email: string, password: string): ApiError | void {
     if (!isEmailValid(email)) {
-      return new InvalidEmailError('The email must be a valid email.');
+      const invalidEmailError = new InvalidEmailError(
+        StatusCode.BAD_REQUEST,
+        'The email must be a valid email.',
+      );
+      return invalidEmailError;
     }
   }
 }

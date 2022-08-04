@@ -1,6 +1,6 @@
-import { BaseError } from './base-error';
+import { ApiError } from './api-error';
 
-export class MissingParamError extends BaseError {
+export class MissingParamError extends ApiError {
   constructor(paramName: string) {
     super(`The ${paramName} must not be empty.`);
   }

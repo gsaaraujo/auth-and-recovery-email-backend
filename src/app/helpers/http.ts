@@ -1,31 +1,17 @@
-import { BaseError } from '../../common/errors/base-error';
+import { ApiError } from '../../common/errors/api-error';
+
+export enum StatusCode {
+  OK = 200,
+  CREATED = 201,
+  BAD_REQUEST = 400,
+  UNAUTHORIZED = 401,
+  FORBIDDEN = 403,
+  NOT_FOUND = 404,
+  INTERNAL_SERVER_ERROR = 500,
+  BAD_GATEWAY = 502,
+}
 
 export type HttpResponse = {
-  statusCode: number;
+  statusCode: StatusCode;
   data: any;
 };
-
-export const ok = (data: any): HttpResponse => ({
-  statusCode: 200,
-  data: data,
-});
-
-export const badRequest = (error: BaseError): HttpResponse => ({
-  statusCode: 400,
-  data: error.message,
-});
-
-export const unauthorized = (error: BaseError): HttpResponse => ({
-  statusCode: 401,
-  data: error.message,
-});
-
-export const forbidden = (error: BaseError): HttpResponse => ({
-  statusCode: 403,
-  data: error.message,
-});
-
-export const internalServerError = (error: BaseError): HttpResponse => ({
-  statusCode: 500,
-  data: error.message,
-});

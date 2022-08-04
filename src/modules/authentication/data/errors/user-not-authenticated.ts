@@ -1,3 +1,3 @@
-import { BaseError } from '../../../../common/errors/base-error';
+import { ApiError } from '../../../../common/errors/api-error';
 
-export class UserNotAuthenticatedError extends BaseError {}
+export class UserNotAuthenticatedError extends ApiError {}

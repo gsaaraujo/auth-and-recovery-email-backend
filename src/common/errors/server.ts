@@ -1,3 +1,3 @@
-import { BaseError } from './base-error';
+import { ApiError } from './api-error';
 
-export class ServerError extends BaseError {}
+export class ServerError extends ApiError {}

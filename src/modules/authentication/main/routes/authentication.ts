@@ -1,15 +1,15 @@
 import { NextFunction, Request, Response, Router } from 'express';
+
 import { signInController } from '../factories/sign-in';
+import { signUpController } from '../factories/sign-up';
 import { HttpResponse } from '../../../../app/helpers/http';
 import { SignInRequest } from '../../infra/controllers/sign-in';
-import { AuthorizeUserRequest } from '../../infra/middlewares/authorize-user';
-import { ReauthorizeUserRequest } from '../../infra/controllers/reauthorize-user';
 import { authorizeUserMiddleware } from '../factories/authorize-user';
 import { reauthorizeUserController } from '../factories/reauthorize-user';
-import { SignUpRequest } from '../../infra/controllers/sign-up';
-import { signUpController } from '../factories/sign-up';
-import { GenerateRecoveryCodeRequest } from '../../infra/controllers/generate-recovery-code';
+import { AuthorizeUserRequest } from '../../infra/middlewares/authorize-user';
+import { ReauthorizeUserRequest } from '../../infra/controllers/reauthorize-user';
 import { generateRecoveryCodeController } from '../factories/generate-recovery-code';
+import { GenerateRecoveryCodeRequest } from '../../infra/controllers/generate-recovery-code';
 
 const authenticationRouter = Router();
 
@@ -29,10 +29,11 @@ authenticationRouter.post(
   '/auth/sign-up',
   async (request: Request, response: Response) => {
     const { name, email, password } = request.body;
-    const signUpRequest: SignUpRequest = { name, email, password };
-    const httpResponse: HttpResponse = await signUpController.handle(
-      signUpRequest,
-    );
+    const httpResponse: HttpResponse = await signUpController.handle({
+      name,
+      email,
+      password,
+    });
     response.status(httpResponse.statusCode).json(httpResponse.data);
   },
 );
@@ -41,9 +42,8 @@ authenticationRouter.post(
   '/auth/get-recovery-code',
   async (request: Request, response: Response) => {
     const { email } = request.body;
-    const generateRecoveryCodeRequest: GenerateRecoveryCodeRequest = { email };
     const httpResponse: HttpResponse =
-      await generateRecoveryCodeController.handle(generateRecoveryCodeRequest);
+      await generateRecoveryCodeController.handle({ email });
     response.status(httpResponse.statusCode).json(httpResponse.data);
   },
 );
@@ -51,12 +51,9 @@ authenticationRouter.post(
 authenticationRouter.get(
   '/auth/new-access-token',
   async (request: Request, response: Response) => {
-    const reauthorizeUserRequest: ReauthorizeUserRequest = {
+    const httpResponse: HttpResponse = await reauthorizeUserController.handle({
       refreshToken: request.headers.authorization ?? '',
-    };
-    const httpResponse: HttpResponse = await reauthorizeUserController.handle(
-      reauthorizeUserRequest,
-    );
+    });
     response.status(httpResponse.statusCode).json(httpResponse.data);
   },
 );
@@ -64,17 +61,13 @@ authenticationRouter.get(
 authenticationRouter.use(
   async (request: Request, response: Response, next: NextFunction) => {
     const { userId } = request.body;
-    const accessToken = request.headers.authorization ?? '';
-    const authorizeUserRequest: AuthorizeUserRequest = {
-      accessToken: accessToken,
+    const httpResponse: HttpResponse = authorizeUserMiddleware.authorize({
+      accessToken: request.headers.authorization ?? '',
       userId: userId ?? '',
-    };
-    const httpResponse: HttpResponse =
-      authorizeUserMiddleware.authorize(authorizeUserRequest);
+    });
 
-    if (httpResponse.statusCode != 200) {
+    if (httpResponse.statusCode != 200)
       response.status(httpResponse.statusCode).json(httpResponse.data);
-    }
 
     next();
   },

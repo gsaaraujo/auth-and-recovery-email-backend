@@ -2,15 +2,16 @@ import jwt from 'jsonwebtoken';
 
 import { Either, left, right } from '../../../../app/helpers/either';
 import { IReauthorizeUserService } from './interfaces/reauthorize-user';
-import { BaseError } from '../../../../common/errors/base-error';
+import { ApiError } from '../../../../common/errors/api-error';
 import { NotAuthorizedError } from '../../infra/errors/not-authorized';
+import { StatusCode } from '../../../../app/helpers/http';
 
 type Payload = {
   userId: string;
 };
 
 export class JWTReauthorizeUserService implements IReauthorizeUserService {
-  async execute(refreshToken: string): Promise<Either<BaseError, string>> {
+  async execute(refreshToken: string): Promise<Either<ApiError, string>> {
     let newAccessToken = '';
     const refreshTokenRaw = refreshToken?.replace('Bearer ', '');
 
@@ -27,7 +28,11 @@ export class JWTReauthorizeUserService implements IReauthorizeUserService {
       );
     } catch (error) {
       if (error instanceof Error) {
-        return left(new NotAuthorizedError(error.message));
+        const notAuthorizedError = new NotAuthorizedError(
+          StatusCode.UNAUTHORIZED,
+          error.message,
+        );
+        return left(notAuthorizedError);
       }
     }
 

@@ -1,6 +1,6 @@
 import { Either } from '../../../../../app/helpers/either';
-import { BaseError } from '../../../../../common/errors/base-error';
+import { ApiError } from '../../../../../common/errors/api-error';
 
 export interface IReauthorizeUserService {
-  execute(refreshToken: string): Promise<Either<BaseError, string>>;
+  execute(refreshToken: string): Promise<Either<ApiError, string>>;
 }

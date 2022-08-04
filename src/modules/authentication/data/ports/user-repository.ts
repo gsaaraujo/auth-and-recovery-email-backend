@@ -1,8 +1,8 @@
 import { UserModel } from '../models/user';
 import { Either } from '../../../../app/helpers/either';
-import { BaseError } from '../../../../common/errors/base-error';
+import { ApiError } from '../../../../common/errors/api-error';
 
 export interface IUserRepository {
-  findOneByEmail(email: string): Promise<Either<BaseError, UserModel | null>>;
-  create(user: UserModel): Promise<Either<BaseError, UserModel>>;
+  findOneByEmail(email: string): Promise<Either<ApiError, UserModel | null>>;
+  create(user: UserModel): Promise<Either<ApiError, UserModel>>;
 }
