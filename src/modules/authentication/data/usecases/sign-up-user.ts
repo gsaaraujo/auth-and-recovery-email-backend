@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
+import { v4 as uuidv4 } from 'uuid';
 
 import { UserSignedDTO } from '../dtos/user-signed';
 import { IUserRepository } from '../ports/user-repository';
@@ -7,7 +8,8 @@ import { UserRegisterDTO } from '../dtos/user-register';
 import { ISignUpUserUsecase } from './interfaces/sign-up-user';
 import { ApiError } from '../../../../common/errors/api-error';
 import { Either, left, right } from '../../../../app/helpers/either';
-import { UserRegisterEntity } from '../../domain/entities/user-register';
+import { RegisterEntity } from '../../domain/entities/register';
+import { UserModel } from '../models/user';
 
 export class SignUpUserUsecase implements ISignUpUserUsecase {
   constructor(private readonly userRepository: IUserRepository) {}
@@ -17,29 +19,20 @@ export class SignUpUserUsecase implements ISignUpUserUsecase {
     email,
     password,
   }: UserRegisterDTO): Promise<Either<ApiError, UserSignedDTO>> {
-    const userRegisterEntityOrError = UserRegisterEntity.create(
-      name,
-      email,
-      password,
-    );
+    const registerEntityOrError = RegisterEntity.create(email, password);
 
-    if (userRegisterEntityOrError.isLeft()) {
-      const error: ApiError = userRegisterEntityOrError.value;
+    if (registerEntityOrError.isLeft()) {
+      const error: ApiError = registerEntityOrError.value;
       return left(error);
     }
 
-    const userRegisterEntity: UserRegisterEntity =
-      userRegisterEntityOrError.value;
-
-    const encryptedPassword = await bcryptjs.hash(
-      userRegisterEntity.password,
-      10,
-    );
+    const registerEntity: RegisterEntity = registerEntityOrError.value;
+    const encryptedPassword = await bcryptjs.hash(registerEntity.password, 10);
 
     const userModelOrError = await this.userRepository.create({
-      id: userRegisterEntity.id,
-      name: userRegisterEntity.name,
-      email: userRegisterEntity.email,
+      id: uuidv4(),
+      name,
+      email: registerEntity.email,
       password: encryptedPassword,
     });
 
@@ -48,7 +41,7 @@ export class SignUpUserUsecase implements ISignUpUserUsecase {
       return left(error);
     }
 
-    const userModel = userModelOrError.value;
+    const userModel: UserModel = userModelOrError.value;
 
     const accessToken: string = jwt.sign(
       { userId: userModel.id },
@@ -62,7 +55,7 @@ export class SignUpUserUsecase implements ISignUpUserUsecase {
       { expiresIn: process.env.REFRESH_TOKEN_EXPIRATION ?? '30d' },
     );
 
-    const userSigned: UserSignedDTO = {
+    const userSignedDTO: UserSignedDTO = {
       id: userModel.id,
       name: userModel.name,
       email: userModel.email,
@@ -70,6 +63,6 @@ export class SignUpUserUsecase implements ISignUpUserUsecase {
       refreshToken,
     };
 
-    return right(userSigned);
+    return right(userSignedDTO);
   }
 }

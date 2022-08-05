@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { Either, left, right } from '../../../../app/helpers/either';
 import { IReauthorizeUserService } from './interfaces/reauthorize-user';
 import { ApiError } from '../../../../common/errors/api-error';
-import { NotAuthorizedError } from '../../infra/errors/not-authorized';
+import { authenticationError } from '../../infra/errors/not-authorized';
 import { StatusCode } from '../../../../app/helpers/http';
 
 type Payload = {
@@ -28,11 +28,11 @@ export class JWTReauthorizeUserService implements IReauthorizeUserService {
       );
     } catch (error) {
       if (error instanceof Error) {
-        const notAuthorizedError = new NotAuthorizedError(
+        const authenticationError = new authenticationError(
           StatusCode.UNAUTHORIZED,
           error.message,
         );
-        return left(notAuthorizedError);
+        return left(authenticationError);
       }
     }
 

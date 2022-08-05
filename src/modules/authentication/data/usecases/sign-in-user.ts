@@ -8,7 +8,7 @@ import { UserCredentialsDTO } from '../dtos/user-credentials';
 import { ISignInUserUsecase } from './interfaces/sign-in-user';
 import { ApiError } from '../../../../common/errors/api-error';
 import { Either, left, right } from '../../../../app/helpers/either';
-import { NotAuthenticatedError } from '../errors/not-authenticated';
+import { AuthenticationError } from '../errors/authentication';
 import { StatusCode } from '../../../../app/helpers/http';
 import { EmailEntity } from '../../domain/entities/email';
 
@@ -40,11 +40,11 @@ export class SignInUserUsecase implements ISignInUserUsecase {
     const userModel: UserModel | null = userModelOrError.value;
 
     if (!userModel) {
-      const notAuthorizedError = new NotAuthenticatedError(
+      const authenticationError = new AuthenticationError(
         StatusCode.UNAUTHORIZED,
         'Email or password is incorrect.',
       );
-      return left(notAuthorizedError);
+      return left(authenticationError);
     }
 
     const isUserAuth: boolean = await bcryptjs.compare(
@@ -53,11 +53,11 @@ export class SignInUserUsecase implements ISignInUserUsecase {
     );
 
     if (!isUserAuth) {
-      const notAuthorizedError = new NotAuthenticatedError(
+      const authenticationError = new AuthenticationError(
         StatusCode.UNAUTHORIZED,
         'Email or password is incorrect.',
       );
-      return left(notAuthorizedError);
+      return left(authenticationError);
     }
 
     const accessToken: string = jwt.sign(

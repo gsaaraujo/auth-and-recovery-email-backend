@@ -1,10 +1,10 @@
 import { UserModel } from '../../data/models/user';
+import { StatusCode } from '../../../../app/helpers/http';
 import { Prisma, PrismaClient, User } from '@prisma/client';
 import { ApiError } from '../../../../common/errors/api-error';
 import { IUserRepository } from '../../data/ports/user-repository';
-import { Either, left, right } from '../../../../app/helpers/either';
 import { DatabaseError } from '../../../../common/errors/database';
-import { StatusCode } from '../../../../app/helpers/http';
+import { Either, left, right } from '../../../../app/helpers/either';
 
 export class PrismaUserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaClient) {}
@@ -28,18 +28,8 @@ export class PrismaUserRepository implements IUserRepository {
 
       return right(userModel);
     } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2002') {
-          const databaseError = new DatabaseError(
-            StatusCode.INTERNAL_SERVER_ERROR,
-            'The email address is already associated with another account.',
-          );
-          return left(databaseError);
-        }
-      }
-
       const databaseError = new DatabaseError(
-        StatusCode.BAD_GATEWAY,
+        StatusCode.INTERNAL_SERVER_ERROR,
         'Database error.',
       );
       return left(databaseError);
@@ -66,7 +56,7 @@ export class PrismaUserRepository implements IUserRepository {
       return right(userModel);
     } catch (error) {
       const databaseError = new DatabaseError(
-        StatusCode.BAD_GATEWAY,
+        StatusCode.INTERNAL_SERVER_ERROR,
         'Database error.',
       );
       return left(databaseError);
