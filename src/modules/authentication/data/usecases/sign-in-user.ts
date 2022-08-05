@@ -8,9 +8,9 @@ import { UserCredentialsDTO } from '../dtos/user-credentials';
 import { ISignInUserUsecase } from './interfaces/sign-in-user';
 import { ApiError } from '../../../../common/errors/api-error';
 import { Either, left, right } from '../../../../app/helpers/either';
-import { UserNotAuthenticatedError } from '../errors/user-not-authenticated';
-import { UserCredentialsEntity } from '../../domain/entities/user-credentials';
+import { NotAuthenticatedError } from '../errors/not-authenticated';
 import { StatusCode } from '../../../../app/helpers/http';
+import { EmailEntity } from '../../domain/entities/email';
 
 export class SignInUserUsecase implements ISignInUserUsecase {
   constructor(private readonly userRepository: IUserRepository) {}
@@ -19,21 +19,17 @@ export class SignInUserUsecase implements ISignInUserUsecase {
     email,
     password,
   }: UserCredentialsDTO): Promise<Either<ApiError, UserSignedDTO>> {
-    const userCredentialsEntityOrError = UserCredentialsEntity.create(
-      email,
-      password,
-    );
+    const emailEntityOrError = EmailEntity.create(email);
 
-    if (userCredentialsEntityOrError.isLeft()) {
-      const error: ApiError = userCredentialsEntityOrError.value;
+    if (emailEntityOrError.isLeft()) {
+      const error: ApiError = emailEntityOrError.value;
       return left(error);
     }
 
-    const userCredentialsEntity: UserCredentialsEntity =
-      userCredentialsEntityOrError.value;
+    const emailEntity: EmailEntity = emailEntityOrError.value;
 
     const userModelOrError = await this.userRepository.findOneByEmail(
-      userCredentialsEntity.email,
+      emailEntity.email,
     );
 
     if (userModelOrError.isLeft()) {
@@ -44,7 +40,7 @@ export class SignInUserUsecase implements ISignInUserUsecase {
     const userModel: UserModel | null = userModelOrError.value;
 
     if (!userModel) {
-      const notAuthorizedError = new UserNotAuthenticatedError(
+      const notAuthorizedError = new NotAuthenticatedError(
         StatusCode.UNAUTHORIZED,
         'Email or password is incorrect.',
       );
@@ -52,12 +48,12 @@ export class SignInUserUsecase implements ISignInUserUsecase {
     }
 
     const isUserAuth: boolean = await bcryptjs.compare(
-      userCredentialsEntity.password,
+      password,
       userModel.password,
     );
 
     if (!isUserAuth) {
-      const notAuthorizedError = new UserNotAuthenticatedError(
+      const notAuthorizedError = new NotAuthenticatedError(
         StatusCode.UNAUTHORIZED,
         'Email or password is incorrect.',
       );
