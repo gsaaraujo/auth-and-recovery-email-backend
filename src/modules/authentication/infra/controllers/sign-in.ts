@@ -1,6 +1,7 @@
+import Joi from 'joi';
+
 import { UserSignedDTO } from '../../data/dtos/user-signed';
-import { ServerError } from '../../../../common/errors/server';
-import { UserCredentialsDTO } from '../../data/dtos/user-credentials';
+import { ApiError } from '../../../../common/errors/api-error';
 import { HttpResponse, StatusCode } from '../../../../app/helpers/http';
 import { ISignInUserUsecase } from '../../data/usecases/interfaces/sign-in-user';
 
@@ -13,21 +14,27 @@ export default class SignInController {
   constructor(private readonly signInUsecase: ISignInUserUsecase) {}
 
   async handle({ email, password }: SignInRequest): Promise<HttpResponse> {
-    if (!!!email.trim() || !!!password.trim()) {
-      const field = email.trim() == '' ? 'email' : 'password';
+    const schema = Joi.object<SignInRequest>({
+      email: Joi.string().trim().required().max(255),
+      password: Joi.string().trim().required().max(255),
+    });
+
+    const { value, error } = schema.validate({ email, password });
+
+    if (error) {
       return {
         statusCode: StatusCode.BAD_REQUEST,
-        data: `The ${field} must not be empty.`,
+        data: error.message,
       };
     }
 
     const userSignedOrError = await this.signInUsecase.execute({
-      email,
-      password,
+      email: value.email,
+      password: value.password,
     });
 
     if (userSignedOrError.isLeft()) {
-      const error = userSignedOrError.value;
+      const error: ApiError = userSignedOrError.value;
       return {
         statusCode: error.status,
         data: error.message,

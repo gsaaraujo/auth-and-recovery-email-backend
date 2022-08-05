@@ -1,3 +1,5 @@
+import Joi from 'joi';
+
 import { UserSignedDTO } from '../../data/dtos/user-signed';
 import { ApiError } from '../../../../common/errors/api-error';
 import { HttpResponse, StatusCode } from '../../../../app/helpers/http';
@@ -17,19 +19,25 @@ export class SignUpController {
     email,
     password,
   }: SignUpRequest): Promise<HttpResponse> {
-    if (!!!name.trim() || !!!email.trim() || !!!password.trim()) {
-      let field = name.trim() === '' ? 'name' : 'email';
-      field = password.trim() === '' ? 'password' : field;
+    const schema = Joi.object<SignUpRequest>({
+      name: Joi.string().trim().required().max(255),
+      email: Joi.string().trim().required().max(255),
+      password: Joi.string().trim().required().max(255),
+    });
+
+    const { value, error } = schema.validate({ name, email, password });
+
+    if (error) {
       return {
         statusCode: StatusCode.BAD_REQUEST,
-        data: `The ${field} must not be empty.`,
+        data: error.message,
       };
     }
 
     const userSignedOrError = await this.signUpUserUsecase.execute({
-      name,
-      email,
-      password,
+      name: value.name,
+      email: value.email,
+      password: value.password,
     });
 
     if (userSignedOrError.isLeft()) {

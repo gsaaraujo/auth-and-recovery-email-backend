@@ -3,13 +3,9 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { signInController } from '../factories/sign-in';
 import { signUpController } from '../factories/sign-up';
 import { HttpResponse } from '../../../../app/helpers/http';
-import { SignInRequest } from '../../infra/controllers/sign-in';
 import { authorizeUserMiddleware } from '../factories/authorize-user';
 import { reauthorizeUserController } from '../factories/reauthorize-user';
-import { AuthorizeUserRequest } from '../../infra/middlewares/authorize-user';
-import { ReauthorizeUserRequest } from '../../infra/controllers/reauthorize-user';
 import { generateRecoveryCodeController } from '../factories/generate-recovery-code';
-import { GenerateRecoveryCodeRequest } from '../../infra/controllers/generate-recovery-code';
 
 const authenticationRouter = Router();
 
@@ -17,10 +13,10 @@ authenticationRouter.post(
   '/auth/sign-in',
   async (request: Request, response: Response) => {
     const { email, password } = request.body;
-    const signInRequest: SignInRequest = { email, password };
-    const httpResponse: HttpResponse = await signInController.handle(
-      signInRequest,
-    );
+    const httpResponse: HttpResponse = await signInController.handle({
+      email,
+      password,
+    });
     response.status(httpResponse.statusCode).json(httpResponse.data);
   },
 );

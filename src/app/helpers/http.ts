@@ -1,5 +1,3 @@
-import { ApiError } from '../../common/errors/api-error';
-
 export enum StatusCode {
   OK = 200,
   CREATED = 201,
