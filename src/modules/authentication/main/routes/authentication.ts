@@ -5,7 +5,6 @@ import { signUpController } from '../factories/sign-up';
 import { HttpResponse } from '../../../../app/helpers/http';
 import { authorizeUserMiddleware } from '../factories/authorize-user';
 import { reauthorizeUserController } from '../factories/reauthorize-user';
-import { generateRecoveryCodeController } from '../factories/generate-recovery-code';
 
 const authenticationRouter = Router();
 
@@ -30,16 +29,6 @@ authenticationRouter.post(
       email,
       password,
     });
-    response.status(httpResponse.statusCode).json(httpResponse.data);
-  },
-);
-
-authenticationRouter.post(
-  '/auth/get-recovery-code',
-  async (request: Request, response: Response) => {
-    const { email } = request.body;
-    const httpResponse: HttpResponse =
-      await generateRecoveryCodeController.handle({ email });
     response.status(httpResponse.statusCode).json(httpResponse.data);
   },
 );
