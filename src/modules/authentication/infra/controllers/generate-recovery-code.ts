@@ -5,6 +5,7 @@ import {
   UserEmailDTO,
 } from '../../data/usecases/interfaces/generate-recovery-code';
 import { ServerError } from '../../../../common/errors/server';
+import Joi from 'joi';
 
 export type GenerateRecoveryCodeRequest = {
   email: string;
@@ -16,17 +17,22 @@ export class GenerateRecoveryCodeController {
   ) {}
 
   async handle({ email }: GenerateRecoveryCodeRequest): Promise<HttpResponse> {
-    if (!!!email.trim()) {
+    const schema = Joi.object<GenerateRecoveryCodeRequest>({
+      email: Joi.string().trim().required().max(255),
+    });
+
+    const { value, error } = schema.validate({ email });
+
+    if (error) {
       return {
         statusCode: StatusCode.BAD_REQUEST,
-        data: `The ${email} must not be empty.`,
+        data: error.message,
       };
     }
 
-    const userEmail: UserEmailDTO = { email };
-    const recoveryCodeOrError = await this.generateRecoveryCodeUsecase.execute(
-      userEmail,
-    );
+    const recoveryCodeOrError = await this.generateRecoveryCodeUsecase.execute({
+      email: value.email,
+    });
 
     if (recoveryCodeOrError.isLeft()) {
       const error: ApiError = recoveryCodeOrError.value;
