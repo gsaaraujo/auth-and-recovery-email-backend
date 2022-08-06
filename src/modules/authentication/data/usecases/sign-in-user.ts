@@ -3,14 +3,14 @@ import bcryptjs from 'bcryptjs';
 
 import { UserModel } from '../models/user';
 import { UserSignedDTO } from '../dtos/user-signed';
+import { StatusCode } from '../../../../app/helpers/http';
+import { EmailEntity } from '../../domain/entities/email';
 import { IUserRepository } from '../ports/user-repository';
 import { UserCredentialsDTO } from '../dtos/user-credentials';
 import { ISignInUserUsecase } from './interfaces/sign-in-user';
 import { ApiError } from '../../../../common/errors/api-error';
-import { Either, left, right } from '../../../../app/helpers/either';
 import { AuthenticationError } from '../errors/authentication';
-import { StatusCode } from '../../../../app/helpers/http';
-import { EmailEntity } from '../../domain/entities/email';
+import { Either, left, right } from '../../../../app/helpers/either';
 
 export class SignInUserUsecase implements ISignInUserUsecase {
   constructor(private readonly userRepository: IUserRepository) {}
@@ -28,16 +28,8 @@ export class SignInUserUsecase implements ISignInUserUsecase {
 
     const emailEntity: EmailEntity = emailEntityOrError.value;
 
-    const userModelOrError = await this.userRepository.findOneByEmail(
-      emailEntity.email,
-    );
-
-    if (userModelOrError.isLeft()) {
-      const error: ApiError = userModelOrError.value;
-      return left(error);
-    }
-
-    const userModel: UserModel | null = userModelOrError.value;
+    const userModel: UserModel | null =
+      await this.userRepository.findOneByEmail(emailEntity.email);
 
     if (!userModel) {
       const authenticationError = new AuthenticationError(

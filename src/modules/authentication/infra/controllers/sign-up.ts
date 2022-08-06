@@ -19,39 +19,46 @@ export class SignUpController {
     email,
     password,
   }: SignUpRequest): Promise<HttpResponse> {
-    const schema = Joi.object<SignUpRequest>({
-      name: Joi.string().trim().required().max(255),
-      email: Joi.string().trim().required().max(255),
-      password: Joi.string().trim().required().max(255),
-    });
+    try {
+      const schema = Joi.object<SignUpRequest>({
+        name: Joi.string().trim().required().max(255),
+        email: Joi.string().trim().required().max(255),
+        password: Joi.string().trim().required().max(255),
+      });
 
-    const { value, error } = schema.validate({ name, email, password });
+      const { value, error } = schema.validate({ name, email, password });
 
-    if (error) {
+      if (error) {
+        return {
+          statusCode: StatusCode.BAD_REQUEST,
+          data: error.message,
+        };
+      }
+
+      const userSignedOrError = await this.signUpUserUsecase.execute({
+        name: value.name,
+        email: value.email,
+        password: value.password,
+      });
+
+      if (userSignedOrError.isLeft()) {
+        const error: ApiError = userSignedOrError.value;
+        return {
+          statusCode: error.status,
+          data: error.message,
+        };
+      }
+
+      const userSigned: UserSignedDTO = userSignedOrError.value;
       return {
-        statusCode: StatusCode.BAD_REQUEST,
-        data: error.message,
+        statusCode: StatusCode.CREATED,
+        data: userSigned,
+      };
+    } catch (error) {
+      return {
+        statusCode: 500,
+        data: error,
       };
     }
-
-    const userSignedOrError = await this.signUpUserUsecase.execute({
-      name: value.name,
-      email: value.email,
-      password: value.password,
-    });
-
-    if (userSignedOrError.isLeft()) {
-      const error: ApiError = userSignedOrError.value;
-      return {
-        statusCode: error.status,
-        data: error.message,
-      };
-    }
-
-    const userSigned: UserSignedDTO = userSignedOrError.value;
-    return {
-      statusCode: StatusCode.CREATED,
-      data: userSigned,
-    };
   }
 }

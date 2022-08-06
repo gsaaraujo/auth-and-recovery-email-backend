@@ -2,14 +2,16 @@ import jwt from 'jsonwebtoken';
 import bcryptjs from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 
+import { UserModel } from '../models/user';
 import { UserSignedDTO } from '../dtos/user-signed';
-import { IUserRepository } from '../ports/user-repository';
 import { UserRegisterDTO } from '../dtos/user-register';
+import { StatusCode } from '../../../../app/helpers/http';
+import { IUserRepository } from '../ports/user-repository';
 import { ISignUpUserUsecase } from './interfaces/sign-up-user';
 import { ApiError } from '../../../../common/errors/api-error';
-import { Either, left, right } from '../../../../app/helpers/either';
 import { RegisterEntity } from '../../domain/entities/register';
-import { UserModel } from '../models/user';
+import { Either, left, right } from '../../../../app/helpers/either';
+import { UserAlreadyExistsError } from '../errors/user-already-exists';
 
 export class SignUpUserUsecase implements ISignUpUserUsecase {
   constructor(private readonly userRepository: IUserRepository) {}
@@ -27,21 +29,25 @@ export class SignUpUserUsecase implements ISignUpUserUsecase {
     }
 
     const registerEntity: RegisterEntity = registerEntityOrError.value;
-    const encryptedPassword = await bcryptjs.hash(registerEntity.password, 10);
+    const isAlreadySignedUp: boolean = await this.userRepository.exists(
+      registerEntity.email,
+    );
 
-    const userModelOrError = await this.userRepository.create({
+    if (isAlreadySignedUp) {
+      const error: ApiError = new UserAlreadyExistsError(
+        StatusCode.CONFLICT,
+        'This email address is already associated with another account.',
+      );
+      return left(error);
+    }
+
+    const encryptedPassword = await bcryptjs.hash(registerEntity.password, 10);
+    const userModel: UserModel = await this.userRepository.create({
       id: uuidv4(),
       name,
       email: registerEntity.email,
       password: encryptedPassword,
     });
-
-    if (userModelOrError.isLeft()) {
-      const error: ApiError = userModelOrError.value;
-      return left(error);
-    }
-
-    const userModel: UserModel = userModelOrError.value;
 
     const accessToken: string = jwt.sign(
       { userId: userModel.id },

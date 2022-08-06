@@ -28,13 +28,13 @@ export class RegisterEntity {
     const isMatch = passwordPattern.test(password);
 
     if (!isMatch) {
-      const invalidEmailError = new InvalidPasswordError(
+      const invalidPasswordError = new InvalidPasswordError(
         StatusCode.BAD_REQUEST,
         'The password must be between 8 to 15 characters which contain at' +
           'least one lowercase letter, one uppercase letter, one numeric digit,' +
           'and one special character',
       );
-      return left(invalidEmailError);
+      return left(invalidPasswordError);
     }
 
     const registerEntity = new RegisterEntity(email, password);
