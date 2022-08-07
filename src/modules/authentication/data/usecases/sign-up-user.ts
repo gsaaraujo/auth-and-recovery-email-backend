@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import bcryptjs from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 
 import { UserModel } from '../models/user';
@@ -18,9 +17,13 @@ import {
   SECRET_ACCESS_TOKEN,
   SECRET_REFRESH_TOKEN,
 } from '../../../../app/helpers/env';
+import { IEncrypter } from '../../../../app/utils/encrypter/encrypter';
 
 export class SignUpUserUsecase implements ISignUpUserUsecase {
-  constructor(private readonly userRepository: IUserRepository) {}
+  constructor(
+    private readonly userRepository: IUserRepository,
+    private readonly encrypter: IEncrypter,
+  ) {}
 
   async execute({
     name,
@@ -47,7 +50,9 @@ export class SignUpUserUsecase implements ISignUpUserUsecase {
       return left(error);
     }
 
-    const encryptedPassword = await bcryptjs.hash(registerEntity.password, 10);
+    const encryptedPassword = await this.encrypter.encrypt(
+      registerEntity.password,
+    );
     const userModel: UserModel = await this.userRepository.create({
       id: uuidv4(),
       name,

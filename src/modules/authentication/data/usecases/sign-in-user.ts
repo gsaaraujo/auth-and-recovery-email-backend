@@ -3,14 +3,15 @@ import bcryptjs from 'bcryptjs';
 
 import { UserModel } from '../models/user';
 import { UserSignedDTO } from '../dtos/user-signed';
-import { HttpStatusCode } from '../../../../app/helpers/http';
 import { EmailEntity } from '../../domain/entities/email';
 import { IUserRepository } from '../ports/user-repository';
+import { ApiError } from '../../../../app/helpers/api-error';
+import { HttpStatusCode } from '../../../../app/helpers/http';
 import { UserCredentialsDTO } from '../dtos/user-credentials';
 import { ISignInUserUsecase } from './interfaces/sign-in-user';
-import { ApiError } from '../../../../app/helpers/api-error';
 import { AuthenticationError } from '../errors/authentication';
 import { Either, left, right } from '../../../../app/helpers/either';
+import { IEncrypter } from '../../../../app/utils/encrypter/encrypter';
 import {
   ACCESS_TOKEN_EXPIRATION,
   REFRESH_TOKEN_EXPIRATION,
@@ -19,7 +20,10 @@ import {
 } from '../../../../app/helpers/env';
 
 export class SignInUserUsecase implements ISignInUserUsecase {
-  constructor(private readonly userRepository: IUserRepository) {}
+  constructor(
+    private readonly userRepository: IUserRepository,
+    private readonly encrypter: IEncrypter,
+  ) {}
 
   async execute({
     email,
@@ -45,7 +49,7 @@ export class SignInUserUsecase implements ISignInUserUsecase {
       return left(authenticationError);
     }
 
-    const isUserAuth: boolean = await bcryptjs.compare(
+    const isUserAuth: boolean = await this.encrypter.compare(
       password,
       userModel.password,
     );
