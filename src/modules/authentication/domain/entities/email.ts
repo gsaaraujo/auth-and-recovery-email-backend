@@ -1,6 +1,6 @@
 import { InvalidEmailError } from '../errors/invalid-email';
-import { StatusCode } from '../../../../app/helpers/http';
-import { ApiError } from '../../../../common/errors/api-error';
+import { HttpStatusCode } from '../../../../app/helpers/http';
+import { ApiError } from '../../../../app/helpers/api-error';
 import { Either, left, right } from '../../../../app/helpers/either';
 import { isEmailValid } from '../../../../app/utils/email-validation';
 
@@ -10,7 +10,7 @@ export class EmailEntity {
   public static create(email: string): Either<ApiError, EmailEntity> {
     if (!isEmailValid(email)) {
       const invalidEmailError = new InvalidEmailError(
-        StatusCode.BAD_REQUEST,
+        HttpStatusCode.BAD_REQUEST,
         'The email must be a valid email.',
       );
       return left(invalidEmailError);

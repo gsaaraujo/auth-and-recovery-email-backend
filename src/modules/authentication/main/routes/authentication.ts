@@ -16,7 +16,7 @@ authenticationRouter.post(
       email,
       password,
     });
-    response.status(httpResponse.statusCode).json(httpResponse.data);
+    response.status(httpResponse.status).json(httpResponse.data);
   },
 );
 
@@ -29,7 +29,7 @@ authenticationRouter.post(
       email,
       password,
     });
-    response.status(httpResponse.statusCode).json(httpResponse.data);
+    response.status(httpResponse.status).json(httpResponse.data);
   },
 );
 
@@ -39,7 +39,7 @@ authenticationRouter.get(
     const httpResponse: HttpResponse = await reauthorizeUserController.handle({
       refreshToken: request.headers.authorization ?? '',
     });
-    response.status(httpResponse.statusCode).json(httpResponse.data);
+    response.status(httpResponse.status).json(httpResponse.data);
   },
 );
 
@@ -51,8 +51,8 @@ authenticationRouter.use(
       userId: userId ?? '',
     });
 
-    if (httpResponse.statusCode != 200)
-      response.status(httpResponse.statusCode).json(httpResponse.data);
+    if (httpResponse.status != 200)
+      response.status(httpResponse.status).json(httpResponse.data);
 
     next();
   },

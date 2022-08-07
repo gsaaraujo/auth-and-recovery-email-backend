@@ -1,10 +1,10 @@
 import jwt from 'jsonwebtoken';
 
+import { HttpStatusCode } from '../../../../app/helpers/http';
+import { ApiError } from '../../../../app/helpers/api-error';
+import { AuthenticationError } from '../errors/authentication';
 import { Either, left, right } from '../../../../app/helpers/either';
 import { IReauthorizeUserService } from './interfaces/reauthorize-user';
-import { ApiError } from '../../../../common/errors/api-error';
-import { authenticationError } from '../../infra/errors/not-authorized';
-import { StatusCode } from '../../../../app/helpers/http';
 
 type Payload = {
   userId: string;
@@ -28,8 +28,8 @@ export class JWTReauthorizeUserService implements IReauthorizeUserService {
       );
     } catch (error) {
       if (error instanceof Error) {
-        const authenticationError = new authenticationError(
-          StatusCode.UNAUTHORIZED,
+        const authenticationError = new AuthenticationError(
+          HttpStatusCode.UNAUTHORIZED,
           error.message,
         );
         return left(authenticationError);

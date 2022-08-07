@@ -4,6 +4,7 @@ import { IUserRepository } from '../../data/ports/user-repository';
 
 export class PrismaUserRepository implements IUserRepository {
   constructor(private readonly prisma: PrismaClient) {}
+
   async exists(email: string): Promise<boolean> {
     const user: User | null = await this.prisma.user.findUnique({
       where: { email },

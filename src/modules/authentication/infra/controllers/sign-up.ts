@@ -1,8 +1,8 @@
 import Joi from 'joi';
 
 import { UserSignedDTO } from '../../data/dtos/user-signed';
-import { ApiError } from '../../../../common/errors/api-error';
-import { HttpResponse, StatusCode } from '../../../../app/helpers/http';
+import { ApiError } from '../../../../app/helpers/api-error';
+import { HttpResponse, HttpStatusCode } from '../../../../app/helpers/http';
 import { ISignUpUserUsecase } from '../../data/usecases/interfaces/sign-up-user';
 
 export type SignUpRequest = {
@@ -30,7 +30,7 @@ export class SignUpController {
 
       if (error) {
         return {
-          statusCode: StatusCode.BAD_REQUEST,
+          status: HttpStatusCode.BAD_REQUEST,
           data: error.message,
         };
       }
@@ -44,19 +44,19 @@ export class SignUpController {
       if (userSignedOrError.isLeft()) {
         const error: ApiError = userSignedOrError.value;
         return {
-          statusCode: error.status,
+          status: error.status,
           data: error.message,
         };
       }
 
       const userSigned: UserSignedDTO = userSignedOrError.value;
       return {
-        statusCode: StatusCode.CREATED,
+        status: HttpStatusCode.CREATED,
         data: userSigned,
       };
     } catch (error) {
       return {
-        statusCode: 500,
+        status: 500,
         data: error,
       };
     }

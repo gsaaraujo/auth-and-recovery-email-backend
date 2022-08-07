@@ -1,3 +1,3 @@
-import { ApiError } from '../../../../common/errors/api-error';
+import { ApiError } from '../../../../app/helpers/api-error';
 
 export class UserAlreadyExistsError extends ApiError {}

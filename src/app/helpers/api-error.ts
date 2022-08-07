@@ -1,9 +1,9 @@
 import { debug } from 'console';
-import { StatusCode } from '../../app/helpers/http';
+import { HttpStatusCode } from './http';
 
 export class ApiError extends Error {
   constructor(
-    public readonly status: StatusCode,
+    public readonly status: HttpStatusCode,
     public readonly message: string,
   ) {
     super();

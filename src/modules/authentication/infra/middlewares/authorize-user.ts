@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-import { HttpResponse, StatusCode } from '../../../../app/helpers/http';
+import { HttpResponse, HttpStatusCode } from '../../../../app/helpers/http';
 
 export type AuthorizeUserRequest = {
   accessToken: string;
@@ -23,21 +23,21 @@ export class AuthorizeUserMiddleware {
 
       if (userId != '' && userId != payload.userId) {
         return {
-          statusCode: StatusCode.FORBIDDEN,
+          status: HttpStatusCode.FORBIDDEN,
           data: 'You are not authorized to perform this action.',
         };
       }
     } catch (error) {
       if (error instanceof Error) {
         return {
-          statusCode: StatusCode.UNAUTHORIZED,
+          status: HttpStatusCode.UNAUTHORIZED,
           data: 'You are not authorized to perform this action.',
         };
       }
     }
 
     return {
-      statusCode: StatusCode.OK,
+      status: HttpStatusCode.OK,
       data: 'ok',
     };
   }

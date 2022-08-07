@@ -1,4 +1,4 @@
-export enum StatusCode {
+export enum HttpStatusCode {
   OK = 200,
   CREATED = 201,
   BAD_REQUEST = 400,
@@ -10,6 +10,6 @@ export enum StatusCode {
 }
 
 export type HttpResponse = {
-  statusCode: StatusCode;
+  status: HttpStatusCode;
   data: any;
 };

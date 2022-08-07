@@ -3,12 +3,12 @@ import bcryptjs from 'bcryptjs';
 
 import { UserModel } from '../models/user';
 import { UserSignedDTO } from '../dtos/user-signed';
-import { StatusCode } from '../../../../app/helpers/http';
+import { HttpStatusCode } from '../../../../app/helpers/http';
 import { EmailEntity } from '../../domain/entities/email';
 import { IUserRepository } from '../ports/user-repository';
 import { UserCredentialsDTO } from '../dtos/user-credentials';
 import { ISignInUserUsecase } from './interfaces/sign-in-user';
-import { ApiError } from '../../../../common/errors/api-error';
+import { ApiError } from '../../../../app/helpers/api-error';
 import { AuthenticationError } from '../errors/authentication';
 import { Either, left, right } from '../../../../app/helpers/either';
 
@@ -33,7 +33,7 @@ export class SignInUserUsecase implements ISignInUserUsecase {
 
     if (!userModel) {
       const authenticationError = new AuthenticationError(
-        StatusCode.UNAUTHORIZED,
+        HttpStatusCode.UNAUTHORIZED,
         'Email or password is incorrect.',
       );
       return left(authenticationError);
@@ -46,7 +46,7 @@ export class SignInUserUsecase implements ISignInUserUsecase {
 
     if (!isUserAuth) {
       const authenticationError = new AuthenticationError(
-        StatusCode.UNAUTHORIZED,
+        HttpStatusCode.UNAUTHORIZED,
         'Email or password is incorrect.',
       );
       return left(authenticationError);

@@ -5,10 +5,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { UserModel } from '../models/user';
 import { UserSignedDTO } from '../dtos/user-signed';
 import { UserRegisterDTO } from '../dtos/user-register';
-import { StatusCode } from '../../../../app/helpers/http';
+import { HttpStatusCode } from '../../../../app/helpers/http';
 import { IUserRepository } from '../ports/user-repository';
 import { ISignUpUserUsecase } from './interfaces/sign-up-user';
-import { ApiError } from '../../../../common/errors/api-error';
+import { ApiError } from '../../../../app/helpers/api-error';
 import { RegisterEntity } from '../../domain/entities/register';
 import { Either, left, right } from '../../../../app/helpers/either';
 import { UserAlreadyExistsError } from '../errors/user-already-exists';
@@ -35,7 +35,7 @@ export class SignUpUserUsecase implements ISignUpUserUsecase {
 
     if (isAlreadySignedUp) {
       const error: ApiError = new UserAlreadyExistsError(
-        StatusCode.CONFLICT,
+        HttpStatusCode.CONFLICT,
         'This email address is already associated with another account.',
       );
       return left(error);

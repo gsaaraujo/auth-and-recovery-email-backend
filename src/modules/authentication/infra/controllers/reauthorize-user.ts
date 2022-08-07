@@ -1,6 +1,6 @@
 import Joi from 'joi';
-import { HttpResponse, StatusCode } from '../../../../app/helpers/http';
-import { ApiError } from '../../../../common/errors/api-error';
+import { HttpResponse, HttpStatusCode } from '../../../../app/helpers/http';
+import { ApiError } from '../../../../app/helpers/api-error';
 import { IReauthorizeUserService } from '../../data/services/interfaces/reauthorize-user';
 
 export type ReauthorizeUserRequest = {
@@ -23,7 +23,7 @@ export class ReauthorizeUserController {
 
     if (error) {
       return {
-        statusCode: StatusCode.BAD_REQUEST,
+        status: HttpStatusCode.BAD_REQUEST,
         data: error.message,
       };
     }
@@ -35,14 +35,14 @@ export class ReauthorizeUserController {
     if (newAccessTokenOrError.isLeft()) {
       const error: ApiError = newAccessTokenOrError.value;
       return {
-        statusCode: error.status,
+        status: error.status,
         data: error.message,
       };
     }
 
     const newAccessToken: string = newAccessTokenOrError.value;
     return {
-      statusCode: StatusCode.OK,
+      status: HttpStatusCode.OK,
       data: newAccessToken,
     };
   }
