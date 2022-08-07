@@ -1,5 +1,6 @@
 import Joi from 'joi';
 
+import { debug } from 'console';
 import { UserSignedDTO } from '../../data/dtos/user-signed';
 import { ApiError } from '../../../../app/helpers/api-error';
 import { HttpResponse, HttpStatusCode } from '../../../../app/helpers/http';
@@ -55,9 +56,12 @@ export class SignUpController {
         data: userSigned,
       };
     } catch (error) {
+      if (error instanceof Error) {
+        debug(error.stack);
+      }
       return {
         status: 500,
-        data: error,
+        data: 'Server error',
       };
     }
   }

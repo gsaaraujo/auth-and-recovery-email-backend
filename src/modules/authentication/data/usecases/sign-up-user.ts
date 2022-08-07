@@ -1,4 +1,3 @@
-import jwt from 'jsonwebtoken';
 import { v4 as uuidv4 } from 'uuid';
 
 import { UserModel } from '../models/user';
@@ -18,11 +17,13 @@ import {
   SECRET_REFRESH_TOKEN,
 } from '../../../../app/helpers/env';
 import { IEncrypter } from '../../../../app/utils/encrypter/encrypter';
+import { ITokenGenerator } from '../../../../app/utils/token-generator/token-generator';
 
 export class SignUpUserUsecase implements ISignUpUserUsecase {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly encrypter: IEncrypter,
+    private readonly tokenGenerator: ITokenGenerator,
   ) {}
 
   async execute({
@@ -60,16 +61,16 @@ export class SignUpUserUsecase implements ISignUpUserUsecase {
       password: encryptedPassword,
     });
 
-    const accessToken: string = jwt.sign(
-      { userId: userModel.id },
+    const accessToken: string = await this.tokenGenerator.generate(
       SECRET_ACCESS_TOKEN,
-      { expiresIn: ACCESS_TOKEN_EXPIRATION },
+      Number(ACCESS_TOKEN_EXPIRATION),
+      { userId: userModel.id },
     );
 
-    const refreshToken: string = jwt.sign(
-      { userId: userModel.id },
+    const refreshToken: string = await this.tokenGenerator.generate(
       SECRET_REFRESH_TOKEN,
-      { expiresIn: REFRESH_TOKEN_EXPIRATION },
+      Number(REFRESH_TOKEN_EXPIRATION),
+      { userId: userModel.id },
     );
 
     const userSignedDTO: UserSignedDTO = {

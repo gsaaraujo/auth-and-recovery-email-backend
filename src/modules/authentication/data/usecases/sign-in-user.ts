@@ -1,6 +1,3 @@
-import jwt from 'jsonwebtoken';
-import bcryptjs from 'bcryptjs';
-
 import { UserModel } from '../models/user';
 import { UserSignedDTO } from '../dtos/user-signed';
 import { EmailEntity } from '../../domain/entities/email';
@@ -18,11 +15,13 @@ import {
   SECRET_ACCESS_TOKEN,
   SECRET_REFRESH_TOKEN,
 } from '../../../../app/helpers/env';
+import { ITokenGenerator } from '../../../../app/utils/token-generator/token-generator';
 
 export class SignInUserUsecase implements ISignInUserUsecase {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly encrypter: IEncrypter,
+    private readonly tokenGenerator: ITokenGenerator,
   ) {}
 
   async execute({
@@ -50,8 +49,8 @@ export class SignInUserUsecase implements ISignInUserUsecase {
     }
 
     const isUserAuth: boolean = await this.encrypter.compare(
-      password,
       userModel.password,
+      password,
     );
 
     if (!isUserAuth) {
@@ -62,16 +61,16 @@ export class SignInUserUsecase implements ISignInUserUsecase {
       return left(authenticationError);
     }
 
-    const accessToken: string = jwt.sign(
-      { userId: userModel.id },
+    const accessToken: string = await this.tokenGenerator.generate(
       SECRET_ACCESS_TOKEN,
-      { expiresIn: ACCESS_TOKEN_EXPIRATION },
+      Number(ACCESS_TOKEN_EXPIRATION),
+      { userId: userModel.id },
     );
 
-    const refreshToken: string = jwt.sign(
-      { userId: userModel.id },
+    const refreshToken: string = await this.tokenGenerator.generate(
       SECRET_REFRESH_TOKEN,
-      { expiresIn: REFRESH_TOKEN_EXPIRATION },
+      Number(REFRESH_TOKEN_EXPIRATION),
+      { userId: userModel.id },
     );
 
     const userSignedDTO: UserSignedDTO = {
