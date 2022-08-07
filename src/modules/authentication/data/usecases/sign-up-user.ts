@@ -12,6 +12,12 @@ import { ApiError } from '../../../../app/helpers/api-error';
 import { RegisterEntity } from '../../domain/entities/register';
 import { Either, left, right } from '../../../../app/helpers/either';
 import { UserAlreadyExistsError } from '../errors/user-already-exists';
+import {
+  ACCESS_TOKEN_EXPIRATION,
+  REFRESH_TOKEN_EXPIRATION,
+  SECRET_ACCESS_TOKEN,
+  SECRET_REFRESH_TOKEN,
+} from '../../../../app/helpers/env';
 
 export class SignUpUserUsecase implements ISignUpUserUsecase {
   constructor(private readonly userRepository: IUserRepository) {}
@@ -51,14 +57,14 @@ export class SignUpUserUsecase implements ISignUpUserUsecase {
 
     const accessToken: string = jwt.sign(
       { userId: userModel.id },
-      process.env.SECRET_ACCESS_TOKEN ?? '',
-      { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION ?? '15m' },
+      SECRET_ACCESS_TOKEN,
+      { expiresIn: ACCESS_TOKEN_EXPIRATION },
     );
 
     const refreshToken: string = jwt.sign(
       { userId: userModel.id },
-      process.env.SECRET_REFRESH_TOKEN ?? '',
-      { expiresIn: process.env.REFRESH_TOKEN_EXPIRATION ?? '30d' },
+      SECRET_REFRESH_TOKEN,
+      { expiresIn: REFRESH_TOKEN_EXPIRATION },
     );
 
     const userSignedDTO: UserSignedDTO = {

@@ -5,6 +5,11 @@ import { ApiError } from '../../../../app/helpers/api-error';
 import { AuthenticationError } from '../errors/authentication';
 import { Either, left, right } from '../../../../app/helpers/either';
 import { IReauthorizeUserService } from './interfaces/reauthorize-user';
+import {
+  ACCESS_TOKEN_EXPIRATION,
+  SECRET_ACCESS_TOKEN,
+  SECRET_REFRESH_TOKEN,
+} from '../../../../app/helpers/env';
 
 type Payload = {
   userId: string;
@@ -18,13 +23,13 @@ export class JWTReauthorizeUserService implements IReauthorizeUserService {
     try {
       const payload = jwt.verify(
         refreshTokenRaw,
-        process.env.SECRET_REFRESH_TOKEN ?? '',
+        SECRET_REFRESH_TOKEN,
       ) as Payload;
 
       newAccessToken = jwt.sign(
         { userId: payload.userId },
-        process.env.SECRET_ACCESS_TOKEN ?? '',
-        { expiresIn: process.env.ACCESS_TOKEN_EXPIRATION ?? '15m' },
+        SECRET_ACCESS_TOKEN,
+        { expiresIn: ACCESS_TOKEN_EXPIRATION },
       );
     } catch (error) {
       if (error instanceof Error) {

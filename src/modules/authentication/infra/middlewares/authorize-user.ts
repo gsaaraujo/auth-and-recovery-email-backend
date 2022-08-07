@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import { SECRET_ACCESS_TOKEN } from '../../../../app/helpers/env';
 
 import { HttpResponse, HttpStatusCode } from '../../../../app/helpers/http';
 
@@ -18,7 +19,7 @@ export class AuthorizeUserMiddleware {
     try {
       const payload = jwt.verify(
         accessTokenRaw,
-        process.env.SECRET_ACCESS_TOKEN ?? '',
+        SECRET_ACCESS_TOKEN,
       ) as Payload;
 
       if (userId != '' && userId != payload.userId) {
