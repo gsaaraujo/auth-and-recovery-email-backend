@@ -3,10 +3,10 @@ import jwt from 'jsonwebtoken';
 import { IAuthTokenGenerator } from './auth-token-generator';
 
 export class JwtAuthTokenGenerator implements IAuthTokenGenerator {
-  async getUserId(token: string): Promise<string> {
+  async getPayload(token: string): Promise<string> {
     return jwt.decode(token) as string;
   }
-  async isValid(token: string, secretKey: string): Promise<boolean> {
+  async validate(token: string, secretKey: string): Promise<boolean> {
     return !!jwt.verify(token, secretKey);
   }
   async generate(
@@ -14,6 +14,6 @@ export class JwtAuthTokenGenerator implements IAuthTokenGenerator {
     secretKey: string,
     expiration: number,
   ): Promise<string> {
-    return jwt.sign(userId, secretKey, { expiresIn: expiration });
+    return jwt.sign({ userId }, secretKey, { expiresIn: expiration });
   }
 }

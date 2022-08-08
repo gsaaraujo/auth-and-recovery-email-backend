@@ -17,7 +17,7 @@ export class JWTReauthorizeUserService implements IReauthorizeUserService {
   async execute(refreshToken: string): Promise<Either<ApiError, string>> {
     const refreshTokenRaw = refreshToken?.replace('Bearer ', '');
 
-    const isValid: boolean = await this.authTokenGenerator.isValid(
+    const isValid: boolean = await this.authTokenGenerator.validate(
       refreshTokenRaw,
       SECRET_REFRESH_TOKEN,
     );
@@ -30,7 +30,9 @@ export class JWTReauthorizeUserService implements IReauthorizeUserService {
       return left(authenticationError);
     }
 
-    const userId = await this.authTokenGenerator.getUserId(refreshTokenRaw);
+    const userId: string = await this.authTokenGenerator.getPayload(
+      refreshTokenRaw,
+    );
 
     const newAccessToken: string = await this.authTokenGenerator.generate(
       userId,
