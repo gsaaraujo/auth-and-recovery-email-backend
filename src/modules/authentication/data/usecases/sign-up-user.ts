@@ -17,13 +17,13 @@ import {
   SECRET_REFRESH_TOKEN,
 } from '../../../../app/helpers/env';
 import { IEncrypter } from '../../../../app/utils/encrypter/encrypter';
-import { ITokenGenerator } from '../../../../app/utils/token-generator/token-generator';
+import { IAuthTokenGenerator } from '../../../../app/utils/auth-token-generator/auth-token-generator';
 
 export class SignUpUserUsecase implements ISignUpUserUsecase {
   constructor(
     private readonly userRepository: IUserRepository,
     private readonly encrypter: IEncrypter,
-    private readonly tokenGenerator: ITokenGenerator,
+    private readonly authTokenGenerator: IAuthTokenGenerator,
   ) {}
 
   async execute({
@@ -61,16 +61,16 @@ export class SignUpUserUsecase implements ISignUpUserUsecase {
       password: encryptedPassword,
     });
 
-    const accessToken: string = await this.tokenGenerator.generate(
+    const accessToken: string = await this.authTokenGenerator.generate(
+      userModel.id,
       SECRET_ACCESS_TOKEN,
       Number(ACCESS_TOKEN_EXPIRATION),
-      { userId: userModel.id },
     );
 
-    const refreshToken: string = await this.tokenGenerator.generate(
+    const refreshToken: string = await this.authTokenGenerator.generate(
+      userModel.id,
       SECRET_REFRESH_TOKEN,
       Number(REFRESH_TOKEN_EXPIRATION),
-      { userId: userModel.id },
     );
 
     const userSignedDTO: UserSignedDTO = {

@@ -10,37 +10,33 @@ import {
   SECRET_ACCESS_TOKEN,
   SECRET_REFRESH_TOKEN,
 } from '../../../../app/helpers/env';
-
-type Payload = {
-  userId: string;
-};
-
+import { IAuthTokenGenerator } from '../../../../app/utils/auth-token-generator/auth-token-generator';
 export class JWTReauthorizeUserService implements IReauthorizeUserService {
+  constructor(private readonly authTokenGenerator: IAuthTokenGenerator) {}
+
   async execute(refreshToken: string): Promise<Either<ApiError, string>> {
-    let newAccessToken = '';
     const refreshTokenRaw = refreshToken?.replace('Bearer ', '');
 
-    try {
-      const payload = jwt.verify(
-        refreshTokenRaw,
-        SECRET_REFRESH_TOKEN,
-      ) as Payload;
+    const isValid: boolean = await this.authTokenGenerator.isValid(
+      refreshTokenRaw,
+      SECRET_REFRESH_TOKEN,
+    );
 
-      newAccessToken = jwt.sign(
-        { userId: payload.userId },
-        SECRET_ACCESS_TOKEN,
-        { expiresIn: ACCESS_TOKEN_EXPIRATION },
+    if (!isValid) {
+      const authenticationError = new AuthenticationError(
+        HttpStatusCode.UNAUTHORIZED,
+        'error.message',
       );
-    } catch (error) {
-      if (error instanceof Error) {
-        const authenticationError = new AuthenticationError(
-          HttpStatusCode.UNAUTHORIZED,
-          error.message,
-        );
-        return left(authenticationError);
-      }
+      return left(authenticationError);
     }
 
+    const userId = await this.authTokenGenerator.getUserId(refreshTokenRaw);
+
+    const newAccessToken: string = await this.authTokenGenerator.generate(
+      userId,
+      SECRET_ACCESS_TOKEN,
+      Number(ACCESS_TOKEN_EXPIRATION),
+    );
     return right(newAccessToken);
   }
 }

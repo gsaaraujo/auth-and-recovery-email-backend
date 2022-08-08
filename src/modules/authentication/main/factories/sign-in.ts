@@ -3,11 +3,11 @@ import SignInController from '../../infra/controllers/sign-in';
 import { SignInUserUsecase } from '../../data/usecases/sign-in-user';
 import { PrismaUserRepository } from '../../infra/repositories/prisma-user';
 import { ArgoEncrypter } from '../../../../app/utils/encrypter/argo-encrypter';
-import { JwtTokenGenerator } from '../../../../app/utils/token-generator/jwt-token-generator';
+import { JwtAuthTokenGenerator } from '../../../../app/utils/auth-token-generator/jwt-auth-token-generator';
 
 const prismaClient = new PrismaClient();
 const encrypter = new ArgoEncrypter();
-const tokenGenerator = new JwtTokenGenerator();
+const tokenGenerator = new JwtAuthTokenGenerator();
 
 const prismaUserRepository = new PrismaUserRepository(prismaClient);
 const signInService = new SignInUserUsecase(
