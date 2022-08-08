@@ -15,35 +15,49 @@ export class ReauthorizeUserController {
   async handle({
     refreshToken,
   }: ReauthorizeUserRequest): Promise<HttpResponse> {
-    const schema = Joi.object<ReauthorizeUserRequest>({
-      refreshToken: Joi.string().trim().required().max(255),
-    });
+    try {
+      const schema = Joi.object<ReauthorizeUserRequest>({
+        refreshToken: Joi.string().trim().required().max(255),
+      });
 
-    const { value, error } = schema.validate({ refreshToken });
+      const { value, error } = schema.validate({ refreshToken });
 
-    if (error) {
+      if (error) {
+        return {
+          status: HttpStatusCode.BAD_REQUEST,
+          data: error.message,
+        };
+      }
+
+      const newAccessTokenOrError = await this.reauthorizeUserService.execute(
+        value.refreshToken,
+      );
+
+      if (newAccessTokenOrError.isLeft()) {
+        const error: ApiError = newAccessTokenOrError.value;
+        return {
+          status: error.status,
+          data: error.message,
+        };
+      }
+
+      const newAccessToken: string = newAccessTokenOrError.value;
       return {
-        status: HttpStatusCode.BAD_REQUEST,
-        data: error.message,
+        status: HttpStatusCode.OK,
+        data: newAccessToken,
+      };
+    } catch (error) {
+      if (error instanceof Error) {
+        return {
+          status: 403,
+          data: error.message,
+        };
+      }
+
+      return {
+        status: 500,
+        data: 'Server error',
       };
     }
-
-    const newAccessTokenOrError = await this.reauthorizeUserService.execute(
-      value.refreshToken,
-    );
-
-    if (newAccessTokenOrError.isLeft()) {
-      const error: ApiError = newAccessTokenOrError.value;
-      return {
-        status: error.status,
-        data: error.message,
-      };
-    }
-
-    const newAccessToken: string = newAccessTokenOrError.value;
-    return {
-      status: HttpStatusCode.OK,
-      data: newAccessToken,
-    };
   }
 }

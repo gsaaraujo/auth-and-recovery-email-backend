@@ -57,7 +57,10 @@ export class SignUpController {
       };
     } catch (error) {
       if (error instanceof Error) {
-        debug(error.stack);
+        return {
+          status: 401,
+          data: error.message,
+        };
       }
       return {
         status: 500,
