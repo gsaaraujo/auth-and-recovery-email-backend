@@ -1,11 +1,13 @@
 import { ReauthorizeUserController } from '../../infra/controllers/reauthorize-user';
-import { JWTReauthorizeUserService } from '../../data/services/jwt-reauthorize-user';
+import { ReauthorizeUserService } from '../../data/services/reauthorize-user';
 import { JwtAuthTokenGenerator } from '../../../../app/utils/auth-token-generator/jwt-auth-token-generator';
 
-const tokenGenerator = new JwtAuthTokenGenerator();
-const jwtReauthorizeUserService = new JWTReauthorizeUserService(tokenGenerator);
+const jwtAuthTokenGenerator = new JwtAuthTokenGenerator();
+const reauthorizeUserService = new ReauthorizeUserService(
+  jwtAuthTokenGenerator,
+);
 const reauthorizeUserController = new ReauthorizeUserController(
-  jwtReauthorizeUserService,
+  reauthorizeUserService,
 );
 
 export { reauthorizeUserController };

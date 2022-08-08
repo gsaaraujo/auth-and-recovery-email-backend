@@ -7,13 +7,13 @@ import { JwtAuthTokenGenerator } from '../../../../app/utils/auth-token-generato
 
 const prismaClient = new PrismaClient();
 const encrypter = new ArgoEncrypter();
-const tokenGenerator = new JwtAuthTokenGenerator();
+const jwtAuthTokenGenerator = new JwtAuthTokenGenerator();
 
 const prismaUserRepository = new PrismaUserRepository(prismaClient);
 const signUpUserUsecase = new SignUpUserUsecase(
   prismaUserRepository,
   encrypter,
-  tokenGenerator,
+  jwtAuthTokenGenerator,
 );
 const signUpController = new SignUpController(signUpUserUsecase);
 

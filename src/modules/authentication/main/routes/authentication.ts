@@ -3,7 +3,7 @@ import { NextFunction, Request, Response, Router } from 'express';
 import { signInController } from '../factories/sign-in';
 import { signUpController } from '../factories/sign-up';
 import { HttpResponse } from '../../../../app/helpers/http';
-import { authorizeUserMiddleware } from '../factories/authorize-user';
+import { authorizeUserController } from '../factories/authorize-user';
 import { reauthorizeUserController } from '../factories/reauthorize-user';
 
 const authenticationRouter = Router();
@@ -33,6 +33,21 @@ authenticationRouter.post(
   },
 );
 
+authenticationRouter.use(
+  async (request: Request, response: Response, next: NextFunction) => {
+    const { userId } = request.body;
+    const httpResponse: HttpResponse = await authorizeUserController.authorize({
+      accessToken: request.headers.authorization ?? '',
+      userId,
+    });
+
+    if (httpResponse.status != 200)
+      response.status(httpResponse.status).json(httpResponse.data);
+
+    next();
+  },
+);
+
 authenticationRouter.get(
   '/auth/new-access-token',
   async (request: Request, response: Response) => {
@@ -40,21 +55,6 @@ authenticationRouter.get(
       refreshToken: request.headers.authorization ?? '',
     });
     response.status(httpResponse.status).json(httpResponse.data);
-  },
-);
-
-authenticationRouter.use(
-  async (request: Request, response: Response, next: NextFunction) => {
-    const { userId } = request.body;
-    const httpResponse: HttpResponse = await authorizeUserMiddleware.authorize({
-      accessToken: request.headers.authorization ?? '',
-      userId: userId ?? '',
-    });
-
-    if (httpResponse.status != 200)
-      response.status(httpResponse.status).json(httpResponse.data);
-
-    next();
   },
 );
 

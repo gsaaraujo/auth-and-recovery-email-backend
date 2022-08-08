@@ -1,5 +1,3 @@
-import jwt from 'jsonwebtoken';
-
 import { HttpStatusCode } from '../../../../app/helpers/http';
 import { ApiError } from '../../../../app/helpers/api-error';
 import { AuthenticationError } from '../errors/authentication';
@@ -11,7 +9,7 @@ import {
   SECRET_REFRESH_TOKEN,
 } from '../../../../app/helpers/env';
 import { IAuthTokenGenerator } from '../../../../app/utils/auth-token-generator/auth-token-generator';
-export class JWTReauthorizeUserService implements IReauthorizeUserService {
+export class ReauthorizeUserService implements IReauthorizeUserService {
   constructor(private readonly authTokenGenerator: IAuthTokenGenerator) {}
 
   async execute(refreshToken: string): Promise<Either<ApiError, string>> {
