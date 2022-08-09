@@ -33,6 +33,16 @@ authenticationRouter.post(
   },
 );
 
+authenticationRouter.get(
+  '/auth/new-access-token',
+  async (request: Request, response: Response) => {
+    const httpResponse: HttpResponse = await reauthorizeUserController.handle({
+      refreshToken: request.headers.authorization ?? '',
+    });
+    response.status(httpResponse.status).json(httpResponse.data);
+  },
+);
+
 authenticationRouter.use(
   async (request: Request, response: Response, next: NextFunction) => {
     const { userId } = request.body;
@@ -41,20 +51,12 @@ authenticationRouter.use(
       userId,
     });
 
-    if (httpResponse.status != 200)
+    if (httpResponse.status != 200) {
       response.status(httpResponse.status).json(httpResponse.data);
+      return;
+    }
 
     next();
-  },
-);
-
-authenticationRouter.get(
-  '/auth/new-access-token',
-  async (request: Request, response: Response) => {
-    const httpResponse: HttpResponse = await reauthorizeUserController.handle({
-      refreshToken: request.headers.authorization ?? '',
-    });
-    response.status(httpResponse.status).json(httpResponse.data);
   },
 );
 
