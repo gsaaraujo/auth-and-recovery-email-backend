@@ -33,7 +33,7 @@ export class AuthorizeUserService implements IAuthorizeUserService {
       accessTokenRaw,
     );
 
-    if (userId != '' && userId != tokenUserId) {
+    if (userId != undefined && userId != tokenUserId) {
       const error: ApiError = new NotAuthorizedError(
         HttpStatusCode.FORBIDDEN,
         'You are not authorized to perform this action.',

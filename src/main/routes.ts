@@ -4,6 +4,6 @@ import { authenticationRouter } from '../modules/authentication/main/routes/auth
 export const router = Router();
 router.use(authenticationRouter);
 
-router.get('/users', (_, response: Response) => {
+router.post('/users', (_, response: Response) => {
   response.status(200).json('all good !');
 });
