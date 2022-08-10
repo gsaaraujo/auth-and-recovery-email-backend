@@ -9,7 +9,7 @@ describe('ArgoEncrypter -> compare()', () => {
   it('should return true if argon2 return true', async () => {
     jest.spyOn(argon2, 'verify').mockReturnValue(Promise.resolve(true));
 
-    const isMatch = await fakeArgoEncrypter.compare(
+    const isMatch: boolean = await fakeArgoEncrypter.compare(
       fakeEncryptedText,
       fakeText,
     );
@@ -22,7 +22,7 @@ describe('ArgoEncrypter -> compare()', () => {
   it('should return false if argon2 return false', async () => {
     jest.spyOn(argon2, 'verify').mockReturnValue(Promise.resolve(false));
 
-    const isMatch = await fakeArgoEncrypter.compare(
+    const isMatch: boolean = await fakeArgoEncrypter.compare(
       fakeEncryptedText,
       fakeText,
     );
@@ -43,7 +43,7 @@ describe('ArgoEncrypter -> encrypt()', () => {
       .spyOn(argon2, 'hash')
       .mockReturnValue(Promise.resolve(fakeEncryptedText));
 
-    const encrypted = await fakeArgoEncrypter.encrypt(fakeText);
+    const encrypted: string = await fakeArgoEncrypter.encrypt(fakeText);
 
     expect(encrypted).toBe(fakeEncryptedText);
     expect(argon2.hash).toHaveBeenCalledTimes(1);
