@@ -7,6 +7,5 @@ export class ApiError extends Error {
     public readonly message: string,
   ) {
     super();
-    debug(`\n-> ${this.stack}\n`);
   }
 }
