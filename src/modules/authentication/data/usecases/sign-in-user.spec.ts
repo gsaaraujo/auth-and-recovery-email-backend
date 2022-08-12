@@ -13,6 +13,7 @@ import {
 import { InvalidEmailError } from '../../domain/errors/invalid-email';
 import { HttpStatusCode } from '../../../../app/helpers/http';
 import { AuthenticationError } from '../errors/authentication';
+import { ArgoEncrypter } from '../../../../app/utils/encrypter/argo-encrypter';
 
 describe('SignInUserUsecase -> execute()', () => {
   const fakeUserSigned: UserSignedDTO = {
@@ -147,6 +148,7 @@ describe('SignInUserUsecase -> execute()', () => {
     );
     expect(mockUserRepository.findOneByEmail).toHaveBeenCalledWith(fakeEmail);
     expect(mockUserRepository.findOneByEmail).toHaveBeenCalledTimes(1);
+    expect(mockArgoEncrypter.compare).toHaveBeenCalledTimes(0);
   });
 
   it('should return AuthenticationError if password does not match.', async () => {
