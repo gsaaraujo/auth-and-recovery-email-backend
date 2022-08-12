@@ -46,7 +46,7 @@ authenticationRouter.get(
 authenticationRouter.use(
   async (request: Request, response: Response, next: NextFunction) => {
     const { userId } = request.body;
-    const httpResponse: HttpResponse = await authorizeUserController.authorize({
+    const httpResponse: HttpResponse = await authorizeUserController.handle({
       accessToken: request.headers.authorization ?? '',
       userId,
     });

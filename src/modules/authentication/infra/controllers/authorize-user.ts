@@ -1,4 +1,3 @@
-import { debug } from 'console';
 import Joi from 'joi';
 import { ApiError } from '../../../../app/helpers/api-error';
 import { HttpResponse, HttpStatusCode } from '../../../../app/helpers/http';
@@ -13,7 +12,7 @@ export type AuthorizeUserRequest = {
 export class AuthorizeUserController {
   constructor(private readonly authorizeUserService: IAuthorizeUserService) {}
 
-  async authorize({
+  async handle({
     accessToken,
     userId,
   }: AuthorizeUserRequest): Promise<HttpResponse> {
