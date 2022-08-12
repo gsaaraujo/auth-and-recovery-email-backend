@@ -1,5 +1,3 @@
-import Joi from 'joi';
-
 import { AuthorizeUserController } from './authorize-user';
 import { IAuthorizeUserService } from '../../data/services/interfaces/authorize-user';
 import { AuthorizationDTO } from '../../data/dtos/authorization-credentials';
@@ -20,7 +18,7 @@ describe('Authorize -> handle()', () => {
     mockAuthorizeUserService,
   );
 
-  it('should return response OK if user is authorized', async () => {
+  it('should return response OK with authorizationDTO if user is authorized', async () => {
     const fakeAccesToken = 'any_access_token';
     const fakeUserId = 'any_user_id';
 
@@ -44,7 +42,7 @@ describe('Authorize -> handle()', () => {
     expect(mockAuthorizeUserService.execute).toHaveBeenCalledTimes(1);
   });
 
-  it('should return response BAD_REQUEST if body has invalids inputs.', async () => {
+  it('should return response BAD_REQUEST if body has invalid inputs.', async () => {
     const fakeAccesToken = '';
     const fakeUserId = '';
 
