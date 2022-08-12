@@ -9,6 +9,7 @@ import {
   SECRET_REFRESH_TOKEN,
 } from '../../../../app/helpers/env';
 import { IAuthTokenGenerator } from '../../../../app/utils/auth-token-generator/auth-token-generator';
+
 export class ReauthorizeUserService implements IReauthorizeUserService {
   constructor(private readonly authTokenGenerator: IAuthTokenGenerator) {}
 
