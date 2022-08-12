@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "ts-node-dev --inspect --respawn --transpile-only --exit-child  src/main/server.ts",
-    "test": "jest --noStackTrace --watch --silent --coverage=false",
+    "test": "jest --noStackTrace --watch --coverage=false",
     "test:coverage": "jest --noStackTrace --silent"
   },
   "dependencies": {

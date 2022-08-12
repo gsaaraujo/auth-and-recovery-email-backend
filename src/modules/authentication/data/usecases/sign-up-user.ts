@@ -54,6 +54,7 @@ export class SignUpUserUsecase implements ISignUpUserUsecase {
     const encryptedPassword = await this.encrypter.encrypt(
       registerEntity.password,
     );
+
     const userModel: UserModel = await this.userRepository.create({
       id: uuidv4(),
       name,
