@@ -48,12 +48,7 @@ describe('Reauthorize -> execute()', () => {
   });
 
   it('should return BAD_REQUEST if refresh token length provided exceeds 255 characters.', async () => {
-    const fakeRefreshToken =
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit,' +
-      'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' +
-      'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' +
-      'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi' +
-      'ut aliquip ex ea commodo consequat.';
+    const fakeRefreshToken = 'Lorem'.repeat(255);
 
     const httpResponse = await reauthorizeUserController.handle({
       refreshToken: fakeRefreshToken,

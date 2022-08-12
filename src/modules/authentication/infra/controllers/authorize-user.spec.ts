@@ -93,12 +93,7 @@ describe('Authorize -> handle()', () => {
   });
 
   it('should return BAD_REQUEST if access token length exceeds 255 characters.', async () => {
-    const fakeAccesToken =
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit,' +
-      'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' +
-      'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' +
-      'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi' +
-      'ut aliquip ex ea commodo consequat.';
+    const fakeAccesToken = 'Lorem'.repeat(255);
     const fakeUserId = 'any_user_id';
 
     const fakeResponse: HttpResponse = {

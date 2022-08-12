@@ -71,12 +71,7 @@ describe('SignUpController -> handle()', () => {
   });
 
   it('should return status BAD_REQUEST if name length exceeds 255 characters.', async () => {
-    const fakeName =
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit,' +
-      'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' +
-      'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' +
-      'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi' +
-      'ut aliquip ex ea commodo consequat.';
+    const fakeName = 'Lorem'.repeat(255);
     const fakeEmail = 'any_email';
     const fakePassword = 'any_password';
 
@@ -115,12 +110,7 @@ describe('SignUpController -> handle()', () => {
 
   it('should return status BAD_REQUEST if email length exceeds 255 characters.', async () => {
     const fakeName = 'any_name';
-    const fakeEmail =
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit,' +
-      'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' +
-      'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' +
-      'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi' +
-      'ut aliquip ex ea commodo consequat.';
+    const fakeEmail = 'Lorem'.repeat(255);
     const fakePassword = 'any_password';
 
     const fakeResponse: HttpResponse = {
@@ -159,12 +149,7 @@ describe('SignUpController -> handle()', () => {
   it('should return status BAD_REQUEST if password length exceeds 255 characters.', async () => {
     const fakeName = 'any_name';
     const fakeEmail = 'any_email';
-    const fakePassword =
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit,' +
-      'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' +
-      'sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.' +
-      'Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi' +
-      'ut aliquip ex ea commodo consequat.';
+    const fakePassword = 'Lorem'.repeat(255);
 
     const fakeResponse: HttpResponse = {
       status: HttpStatusCode.BAD_REQUEST,
