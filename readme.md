@@ -22,3 +22,9 @@ If at least you use the fundamental concept of Clean Architecture, dividing your
 ## 💻 Project
 
 This project is just a authentication and authorization module. It was made with NodeJS, Typescript and Prisma.
+
+## ✨ Techs
+
+- [ ] NodeJs, Typescript and Prisma
+- [ ] Clean Architecture and SOLID
+- [ ] Unit Test
