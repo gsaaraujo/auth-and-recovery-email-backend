@@ -3,7 +3,7 @@ import { InvalidEmailError } from '../errors/invalid-email';
 import { EmailEntity } from './email';
 
 describe('EmailEntity', () => {
-  it('should create a email if email is valid.', () => {
+  it('should create Email if email is valid.', () => {
     const fakeEmail = 'gabriel.houth@gmail.com';
     const fakeEmailEntity: EmailEntity = {
       email: 'gabriel.houth@gmail.com',
