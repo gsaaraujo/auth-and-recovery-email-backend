@@ -22,6 +22,7 @@ If at least you use the fundamental concept of Clean Architecture, dividing your
 ## 💻 Project
 
 This project is just a authentication and authorization module. It was made with NodeJS, Typescript and Prisma.
+You can access the frontend [HERE](https://github.com/gsaaraujo/authentication-and-authorization-frontend).
 
 ## ✨ Techs
 
